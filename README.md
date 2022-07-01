@@ -1,8 +1,8 @@
 # minishell
-Компилировать с флагом -lreadline
-Инфо:
-https://www.youtube.com/watch?v=A7ccmRSn7JY\n
-https://www.youtube.com/watch?v=Um3pzuee-4Y\n
+Компилировать с флагом -lreadline. 
+Инфо:  
+https://www.youtube.com/watch?v=A7ccmRSn7JY. 
+https://www.youtube.com/watch?v=Um3pzuee-4Y. 
 # Оболочка
 - [ ] Инициализировать переменные
 - [x] Добавить историю
