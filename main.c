@@ -1,20 +1,28 @@
-#include <stdio.h>
-#include <readline/readline.h>
-#include <stdlib.h>
-#include <readline/history.h>
+#include "minishell.h"
 
-#define CLOSE "\001\033[0m\002"
-#define BLOD "\001\033[1m\002"
-#define BEGIN(x,y) "\001\033["#x";"#y"m\002"
-
-int main(void)
+int main(int argc, char **argv, char **envp)
 {
     char *str;
-    while (1)
+
+    if (argc != 1 && argv)
+    {
+        //error
+        return (0);
+    }
+    signal(SIGQUIT, SIG_IGN); // игнорируем сигнал выхода 
+    while (!exit)
     {
         str = readline(BEGIN(49, 34)"Myshell $ "CLOSE);
-        add_history(str);
-        //Обработка
+        if (str == NULL)
+        {
+            free(str);
+            return (1)
+        }
+        if (ft_strlen(str) > 0)
+            add_history(str);
+        //Блок обработки
         free(str);
     }
+    ft_all_clear(); // чистка всего и вся
+    return (0);
 }
