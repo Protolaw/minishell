@@ -10,7 +10,7 @@ int main(int argc, char **argv, char **envp)
         return (0);
     }
     signal(SIGQUIT, SIG_IGN); // игнорируем сигнал выхода 
-    while (!exit)
+    while (!exit) //некая переменная выхода, по умолчанию 1
     {
         str = readline(BEGIN(49, 34)"Myshell $ "CLOSE);
         if (str == NULL)
@@ -20,6 +20,8 @@ int main(int argc, char **argv, char **envp)
         }
         if (ft_strlen(str) > 0)
             add_history(str);
+        if (ft_strlen(str) == 0 || escape_character_check(str))
+            continue ;
         //Блок обработки
         free(str);
     }

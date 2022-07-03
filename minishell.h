@@ -13,4 +13,6 @@
 # define BLOD "\001\033[1m\002"
 # define BEGIN(x,y) "\001\033["#x";"#y"m\002"
 
+int	escape_character_check(char *str);
+
 #endif
