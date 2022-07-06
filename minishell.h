@@ -4,6 +4,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <errno.h>
+# include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
 # include <readline/history.h>
@@ -13,6 +14,13 @@
 # define BLOD "\001\033[1m\002"
 # define BEGIN(x,y) "\001\033["#x";"#y"m\002"
 
-int	escape_character_check(char *str);
+//для лучшей читаемости кода
+# define SUCCESS 0
+# define FAILURE 1
+
+# define INPUT 0
+# define OUTPUT 1
+
+int	special_character_check(char *str);
 
 #endif

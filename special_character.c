@@ -6,7 +6,7 @@ static int check_redirections(char *str)
 
 	i = 0;
 	if (buf[i] == '>' && buf[i + 1] == '>' && buf[i + 2] == '>') // >>> - error >> or > - good
-		return (write(1, "some error\n", 11), 1);
+		return (write(1, "redirection error\n", num_characters), 1);
 	return 0;
 } 
 
@@ -16,11 +16,11 @@ static int check_pipes(char *str)
 
 	i = 0;
 	if (buf[i] == '|' && buf[i + 1] == '|') // | - good || - not good 
-		return (write(1, "some error\n", 11), 1);
+		return (write(1, "pipe error\n", num_characters), 1);
 	return 0;
 }
 
-int	escape_character_check(char *str)
+int	special_character_check(char *str) // проверка на недопустимые символы
 {
 	int	i;
 
