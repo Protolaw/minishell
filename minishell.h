@@ -21,6 +21,12 @@
 # define INPUT 0
 # define OUTPUT 1
 
+typedef struct s_spaces
+{
+	char			*data;
+	struct s_spaces	*next;
+}	t_spaces;
+
 int	special_character_check(char *str);
 
 #endif
