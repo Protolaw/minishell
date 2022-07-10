@@ -1,33 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free.c                                             :+:      :+:    :+:   */
+/*   err.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 15:13:01 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/09 15:32:16 by bbrusco          ###   ########.fr       */
+/*   Created: 2022/07/09 15:13:11 by bbrusco           #+#    #+#             */
+/*   Updated: 2022/07/10 17:28:08 by bbrusco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+# include "../inc/minishell.h"
 
-void	ft_free_str(char **str)
+int ft_err_print(char *s)
 {
-	free(*str);
-	*str = NULL;
-}
-
-void	*ft_free_split(char **split)
-{
-	int	i;
-
-	i = 0;
-	while (split && split[i])
-	{
-		ft_free_str(&split[i]);
-		i++;
-	}
-	free(split);
-	return(NULL);
+    if (s != NULL)
+        ft_putendl_fd(s, 2);
+    return (1);
 }

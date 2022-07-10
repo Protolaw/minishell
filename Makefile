@@ -6,7 +6,7 @@
 #    By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/09 12:33:55 by bbrusco           #+#    #+#              #
-#    Updated: 2022/07/09 15:43:37 by bbrusco          ###   ########.fr        #
+#    Updated: 2022/07/10 17:32:15 by bbrusco          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,32 +14,40 @@ NAME		= ./minishell
 
 CC			= gcc
 C_FLAGS		= -Wall -Werror -Wextra
-L_FLAGS		= -lreadline
+LDLIBS		= -lreadline
 LIBDIR		= ./libft
 LIBFT_NAME	= $(LIBDIR)/libft.a
-RM			= rm -f
+RM			= rm -rf
+
+SDIR		= src
+ODIR		= obj
 
 HEADER		= minishell.h env.h
 SRC			= free.c err.c utils.c main.c
-SRCS_ENV	= env.c
+SRCS_ENV	= env.c env_edit.c
 SRCS		= $(SRC) $(SRCS_ENV)
-OBJS		= $(SRCS:.c=.o)
+OBJS		= $(addprefix $(ODIR)/, $(SRCS:.c=.o))
+
+LDLIBS		:= $(addprefix -L./, $(LIBDIRS)) $(LDLIBS)
+INCLUDES	:= -I./inc/ $(addprefix -I./, $(LIBDIRS)) \
+			   $(addprefix -I./, $(addsuffix /inc, $(LIBDIRS)))
 
 .PHONY: all clean fclean re
 
 all: $(NAME)
 
-$(NAME): 	$(OBJS) ${HEADER}
+$(NAME): 	$(OBJS)
 	@make -C $(LIBDIR) all
-	@$(CC) $(C_FLAGS) $(SRCS) $(L_FLAGS) $(LIBFT_NAME) -o $(NAME)
+	@$(CC) $(C_FLAGS) $(OBJS) $(LDLIBS) $(LIBFT_NAME) -o $(NAME)
 	@echo "\n-- $(NAME) created \n"
 
-%.o :		%.c ${HEADER}
-	@${CC} ${C_FLAGS} -c -o $@ $<
+$(ODIR)/%.o: $(SDIR)/%.c
+	@mkdir -p ${ODIR}
+	@${CC} ${C_FLAGS} -c -o $@ $< $(INCLUDES)
 
 clean:
 	@make -C $(LIBDIR) clean
-	@${RM} ${OBJS}
+	@${RM} ${ODIR}
 	@echo "\n-- deleting objects\n"
 
 fclean:		clean

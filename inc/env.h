@@ -1,20 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   err.c                                              :+:      :+:    :+:   */
+/*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 15:13:11 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/09 15:36:14 by bbrusco          ###   ########.fr       */
+/*   Created: 2022/07/09 12:49:26 by bbrusco           #+#    #+#             */
+/*   Updated: 2022/07/10 15:55:22 by bbrusco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef ENV_H
+# define ENV_H
+
 # include "minishell.h"
 
-int ft_err_print(char *s)
-{
-    if (s != NULL)
-        ft_putstr_fd(s, 2);
-    return (1);
-}
+int		ft_init_env();
+int     ft_print_env();
+
+#endif

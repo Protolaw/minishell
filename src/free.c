@@ -1,39 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 12:36:39 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/09 15:43:15 by bbrusco          ###   ########.fr       */
+/*   Created: 2022/07/09 15:13:01 by bbrusco           #+#    #+#             */
+/*   Updated: 2022/07/10 17:49:23 by bbrusco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "env.h"
+# include "../inc/minishell.h"
 
-int	ft_init_env(char **env)
+void	ft_free_str(char **str)
 {
-	extern char	**environ;
-	int			i;
+	free(*str);
+	*str = NULL;
+}
 
-	i = split_count(environ);
-	if (i == 0)
-		return (0);
-	env = malloc((i + 1) * sizeof(char *));
-	if (env == NULL)
-		return (ft_err_print("msg"));
+void	*ft_free_split(char **split)
+{
+	int	i;
+
 	i = 0;
-	while (environ[i])
+	while (split && split[i])
 	{
-		env[i] = ft_strdup(environ[i]);
-		if (env[i] == NULL)
-		{
-			ft_free_split(env);
-			return (ft_err_print("msg"));
-		}
+		ft_free_str(&split[i]);
 		i++;
 	}
-	env[i] = NULL;
-	return (0);
+	free(split);
+	return(NULL);
+}
+
+void ft_free_all(void)
+{
+	if (g_env)
+		ft_free_split(g_env);
+	rl_clear_history();
 }

@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.h                                              :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 12:49:26 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/09 15:41:37 by bbrusco          ###   ########.fr       */
+/*   Created: 2022/07/09 15:12:44 by bbrusco           #+#    #+#             */
+/*   Updated: 2022/07/10 17:49:45 by bbrusco          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ENV_H
-# define ENV_H
+#include "../inc/minishell.h"
 
-# include "minishell.h"
+int	split_count(char **split)
+{
+	int	i;
 
-int		ft_init_env(char **env);
-
-#endif
+	i = 0;
+	while (split && split[i])
+		i++;
+	return (i);
+}
