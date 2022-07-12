@@ -21,12 +21,19 @@
 # define INPUT 0
 # define OUTPUT 1
 
-typedef struct s_spaces
+typedef struct s_minisplit
 {
-	char			*data;
-	struct s_spaces	*next;
-}	t_spaces;
+	int	i;
+	int	row;
+	int	start;
+}	t_minisplit;
 
-int	special_character_check(char *str);
+int		special_character_check(char *str);
+void	ft_parse(char *str);
+char	**minishell_split(char *str);
+char	*ft_empty(char *s1);
+char	*ft_minijoin(char *s1, char *s2);
+int		words_counter(char *str);
+void	ft_scroller(char *str, char q, int *i, int *count);
 
 #endif

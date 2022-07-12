@@ -24,20 +24,18 @@ int	special_character_check(char *str) // проверка на недопуст
 {
 	int	i;
 
-	i = 0;
-	while (buff[i] != '\0')
+	i = -1;
+	while (buff[++i] != '\0')
 	{
 		if (str[i] == '\"' && ft_strchr(&str[i + 1], '\"')) //ищем вхождение символа "
 		{
-			i++;
 			while (str[i] != '\"') //проматываем строку до первого вхождения данного символа
-				i++;
+				;
 		}
 		else if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'')) //тоже самое для '
 		{
-			i++;
 			while (str[i] != '\'') 
-				i++;
+				;
 		}
 		if (str[i] == '\\' || str[i] == ';') // bonus: || и &&
 		{
@@ -46,6 +44,5 @@ int	special_character_check(char *str) // проверка на недопуст
 		}
 		if (check_pipes(&str[i]) || check_rediretions(&str[i]))
 			return (1);
-		i++;
 	}
 }
