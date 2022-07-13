@@ -5,7 +5,7 @@ static int check_redirections(char *str)
 	int	i;
 
 	i = 0;
-	if (str[i] == '>' && str[stri + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
+	if (str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
 		return (write(1, "redirection error\n", num_characters), 1);
 	return 0;
 } 
