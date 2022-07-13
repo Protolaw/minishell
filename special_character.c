@@ -5,7 +5,7 @@ static int check_redirections(char *str)
 	int	i;
 
 	i = 0;
-	if (buf[i] == '>' && buf[i + 1] == '>' && buf[i + 2] == '>') // >>> - error; >> or > - good
+	if (str[i] == '>' && str[stri + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
 		return (write(1, "redirection error\n", num_characters), 1);
 	return 0;
 } 
@@ -15,7 +15,7 @@ static int check_pipes(char *str)
 	int	i;
 
 	i = 0;
-	if (buf[i] == '|' && buf[i + 1] == '|') // | - good; || - not good 
+	if (str[i] == '|' && str[i + 1] == '|') // | - good; || - not good 
 		return (write(1, "pipe error\n", num_characters), 1);
 	return 0;
 }
@@ -25,7 +25,7 @@ int	special_character_check(char *str) // проверка на недопуст
 	int	i;
 
 	i = -1;
-	while (buff[++i] != '\0')
+	while (str[++i] != '\0')
 	{
 		if (str[i] == '\"' && ft_strchr(&str[i + 1], '\"')) //ищем вхождение символа "
 		{
