@@ -5,9 +5,15 @@ static int check_redirections(char *str)
 	int	i;
 
 	i = 0;
+<<<<<<< HEAD
 	if (str[i] == '>' && str[stri + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
 		return (printf("redirection error\n"), FAILURE);
 	return (SUCCESS);
+=======
+	if (str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
+		return (write(1, "redirection error\n", num_characters), 1);
+	return 0;
+>>>>>>> ea1ce59b11a1ac5890318978d79d4db5c03caf39
 } 
 
 static int check_pipes(char *str)
@@ -41,6 +47,7 @@ int	special_character_check(char *str) // проверка на недопуст
 		if (check_pipes(&str[i]) || check_rediretions(&str[i]))
 			return (FAILURE);
 	}
+<<<<<<< HEAD
 	return (SUCCESS);
 }
 
@@ -76,3 +83,6 @@ int	quotes_check(char *str) // проверяем на незыкрытые ка
 		return (printf("error: unclosed quotes\n"), FAILURE);
 	return (SUCCESS);
 }
+=======
+}
+>>>>>>> ea1ce59b11a1ac5890318978d79d4db5c03caf39
