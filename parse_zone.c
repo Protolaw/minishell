@@ -145,11 +145,11 @@ char	**minishell_split(char *str) // функция разбития строк�
 	return (tmp);
 }
 
-void	ft_parse(char *str)
+int	ft_parse(char *str)
 {
 	char	**tmp;
 
-	if (special_character_check(str)) //тут мы чекаем на неразрешенные символы
-		return ;
+	if (special_character_check(str) || quotes_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
+		return (FAILURE);
 	tmp = minishell_split(str);
 }

@@ -29,11 +29,12 @@ typedef struct s_minisplit
 }	t_minisplit;
 
 int		special_character_check(char *str);
-void	ft_parse(char *str);
+int		ft_parse(char *str);
 char	**minishell_split(char *str);
 char	*ft_empty(char *s1);
 char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
+int		quotes_check(char *str)
 
 #endif

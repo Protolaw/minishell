@@ -38,7 +38,8 @@ int main(int argc, char **argv, char **envp)
             free(str);
             continue ;
         }
-        ft_parse(str);
+        if (!ft_parse(str))
+            // do something
         add_history(str);
         free(str);
     }
