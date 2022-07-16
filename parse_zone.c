@@ -151,5 +151,5 @@ int	ft_parse(char *str)
 
 	if (special_character_check(str) || quotes_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
 		return (FAILURE);
-	tmp = minishell_split(str);
+	tmp = minishell_split(str); // Предусмотреть случай если символ перенаправления ввода написан слитно с командой, в таком случае тоже требуется разделить на строки
 }
