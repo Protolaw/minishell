@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+         #
+#    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/09 12:33:55 by bbrusco           #+#    #+#              #
-#    Updated: 2022/07/10 17:32:15 by bbrusco          ###   ########.fr        #
+#    Updated: 2022/07/18 16:10:02 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,10 +22,11 @@ RM			= rm -rf
 SDIR		= src
 ODIR		= obj
 
-HEADER		= minishell.h env.h
+HEADER		= minishell.h env.h builtin.h utils.h
 SRC			= free.c err.c utils.c main.c
-SRCS_ENV	= env.c env_edit.c
-SRCS		= $(SRC) $(SRCS_ENV)
+SRC_ENV		= env.c env_edit.c
+SRC_BLTIN	= b_env.c b_cd.c
+SRCS		= $(SRC) $(SRC_ENV) $(SRC_BLTIN)
 OBJS		= $(addprefix $(ODIR)/, $(SRCS:.c=.o))
 
 LDLIBS		:= $(addprefix -L./, $(LIBDIRS)) $(LDLIBS)

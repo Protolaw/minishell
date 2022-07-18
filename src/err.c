@@ -1,20 +1,34 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   err.c                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 15:13:11 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/10 17:28:08 by bbrusco          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 # include "../inc/minishell.h"
 
-int ft_err_print(char *s)
+
+int	ft_err_print(char *s1, char *s2, char *err_log)
 {
-    if (s != NULL)
-        ft_putendl_fd(s, 2);
-    return (1);
+	ft_putstr_fd(SHELL_NAME, 2);
+	if (s1)
+	{
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(s1, 2);
+	}
+	if (s2)
+	{
+		if (s1)
+			ft_putstr_fd(": ", 2);
+		ft_putstr_fd(s2, 2);
+	}
+	if (err_log)
+	{
+		if (s1 || s2)
+			ft_putstr_fd(": ", 2);
+		ft_putstr_fd(err_log, 2);
+	}
+	ft_putchar_fd('\n', 2);
+	return (-1);
+}
+
+int	print_error_errno(char *s1, char *s2)
+{
+	ft_err_print(s1, s2, strerror(errno));
+	errno = 0;
+	return (-1);
 }

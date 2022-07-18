@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   env.h                                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/07/09 12:49:26 by bbrusco           #+#    #+#             */
-/*   Updated: 2022/07/10 15:55:22 by bbrusco          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #ifndef ENV_H
 # define ENV_H
@@ -16,6 +5,12 @@
 # include "minishell.h"
 
 int		ft_init_env();
-int     ft_print_env();
+char	*get_value_env(char *key);
+char	*env_find_var(char *key);
+
+int     env_unset_var(char *name);
+int     env_put_var(char *str);
+int     env_set_env(char *name, char *value);
+int     env_var_is_value(char *var_name, char *value);
 
 #endif
