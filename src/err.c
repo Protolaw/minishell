@@ -1,7 +1,6 @@
 
 # include "../inc/minishell.h"
 
-
 int	ft_err_print(char *s1, char *s2, char *err_log)
 {
 	ft_putstr_fd(SHELL_NAME, 2);
@@ -26,7 +25,7 @@ int	ft_err_print(char *s1, char *s2, char *err_log)
 	return (-1);
 }
 
-int	print_error_errno(char *s1, char *s2)
+int	print_err_errno(char *s1, char *s2)
 {
 	ft_err_print(s1, s2, strerror(errno));
 	errno = 0;

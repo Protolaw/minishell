@@ -4,10 +4,11 @@
 
 # include "minishell.h"
 
+void	ft_free_str(char **str);
 void	*ft_free_split(char **split);
 void    ft_free_all(void);
 
-int     print_error_errno(char *s1, char *s2);
+int     print_err_errno(char *s1, char *s2);
 int     ft_err_print(char *s1, char *s2, char *err_log);
 
 int     split_count(char **split);

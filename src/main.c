@@ -30,11 +30,13 @@ int main(int argc, char **argv)
             ft_print_env(g_env);
 
         if (ft_strncmp("exit", str, 4) == 0) // В процессе
-            exit(1);    //  Сюда билт-ин
+            exec_exit(str);    //  Сюда билт-ин
         
         if (ft_strncmp("cd", str, 2) == 0)  //  Выполнение cd
             exec_cd(str);
-            
+        
+        if (ft_strncmp("pwd", str, 3) == 0)  //  Выполнение pwd
+            exec_pwd();
 
         //Блок обработки
         free(str);

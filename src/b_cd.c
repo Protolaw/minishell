@@ -3,8 +3,9 @@
 
 int	update_pwd(void) // Обновление значение PWD и OLDPWD в envcar
 {
-	char	buf[1000];
+	char *buf;
 
+	buf = NULL;
 	if (get_value_env("PWD"))
 	{
 		if (env_set_env("OLDPWD", get_value_env("PWD")) == -1) // Swap the values
@@ -12,13 +13,15 @@ int	update_pwd(void) // Обновление значение PWD и OLDPWD в e
 	}
 	else
 		env_unset_var("OLDPWD"); 		// If value PWD not defined delete the value OLDPWD
-	if (getcwd(buf, sizeof(buf)) == NULL)
+	buf = getcwd(buf, 0);
+	if (buf == NULL)
+		return (print_err_errno("cd", NULL));
+	if (env_set_env("PWD", buf) == -1)
 	{
-		print_error_errno("cd", NULL);
+		ft_free_str(&buf);
 		return (-1);
 	}
-	if (env_set_env("PWD", buf) == -1)
-		return (-1);
+	ft_free_str(&buf);
 	return (0);
 }
 
@@ -50,16 +53,22 @@ int exec_cd(char *str)
     int i;
     char *dir;
 
-    split = ft_split(str, ' ');
+    split = ft_split(str, ' '); 
     i = 0;
-    while(split[i])
+    while (split[i])
         i++;
     dir = get_dir(i, split);
+	// ft_free_split(split);
+	if (i > 2)
+		return (ft_err_print("cd", NULL, "too many arguments"));
     if (dir == NULL)
 		return (-1);
     if (chdir(dir) == -1)
-		return (print_error_errno("cd", dir)); // No such file or directory
+		return (print_err_errno("cd", dir)); // No such file or directory
+	if (split[1] && ft_strncmp(split[1], "-", 1) == 0)
+		ft_putendl_fd(dir, 1);
     if (update_pwd() == 1)
 		return (-1);
+	ft_free_split(split);
     return (0);
 }

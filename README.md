@@ -21,3 +21,14 @@ https://www.youtube.com/watch?v=Um3pzuee-4Y
 # Запуск программ
 - [ ] Ребенок
 - [ ] Родитель
+
+# Builtin
+- [ ] echo -n
+- [x] cd
+- [x] pwd
+- [ ] export
+- [ ] unset
+- [x] env
+- [ ] exit
+
+
