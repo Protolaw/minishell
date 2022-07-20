@@ -28,6 +28,9 @@ typedef struct s_minisplit
 	int	start;
 }	t_minisplit;
 
+int		ft_quotes_error(int d_q, int s_q);
+int		ft_syntax_error(int d, char c)
+
 int		special_character_check(char *str);
 int		ft_parse(char *str);
 char	**minishell_split(char *str);

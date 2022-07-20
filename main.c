@@ -23,7 +23,8 @@ void    ft_sigation(void)
 
 int main(int argc, char **argv, char **envp)
 {
-    char *str;
+    char    *str;
+    char    *parsed;
 
     if (argc != 1 && argv)
         return (FAILURE);
@@ -38,8 +39,9 @@ int main(int argc, char **argv, char **envp)
             free(str);
             continue ;
         }
-        if (!ft_parse(str))
-            // do something
+        parsed = ft_parse(str);
+        if (parsed != NULL)
+            // Если все распарсилось без ошибок можно приступать к выполнению команд
         add_history(str);
         free(str);
     }

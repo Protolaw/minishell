@@ -1,38 +1,5 @@
 #include "minishell.h"
 
-void	ft_scroller(char *str, char q, int *i, int *count) // промотка символов до появления закрывающей кавычки
-{
-	while (str[++(*i)] && str[*i] != q)
-		;
-	(*i)++;
-	(*count)++;
-}
-
-int	words_counter(char *str) //функция подсчета требуемого количества строк для двумерного массива
-{
-	int	count;
-	int	i;
-
-	count = 0;
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] && str[i] == ' ')
-			i++;
-		if (str[i] && str[i] == '\"' && ft_strchr(&str[i + 1], '\"')) // все что находится в кавычках мы считаем за одно слово
-			ft_scroller(str, '\"', &i, &count);
-		else if (str[i] && str[i] == '\'' && ft_strchr(&str[i + 1], '\'')) // отдельный случай для двойных и одинарных кавычек
-			ft_scroller(str, '\'', &i, &count);
-		else if (str[i] && str[i] != ' ')
-		{
-			count++;
-			while (str[i] && str[i] != ' ')
-				i++;
-		}
-	}
-	return (count);
-}
-
 char	*ft_minijoin(char *s1, char *s2) // как обычный join только + еще чистит память за собой
 {
 	size_t	i;
@@ -117,17 +84,28 @@ static void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-char	**minishell_split(char *str) // функция разбития строки в двумерный массив строк
+static void	case_redirection(t_minisplit *m, char *str, char **tmp)
 {
-	char		**tmp;
-	t_minisplit	m;
+	//block
+}
 
+char	**ft_initialization(char **tmp, t_minisplit *m)
+{
 	m.i = 0;
 	m.row = 0;
 	m.start = 0;
 	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
 	if (tmp == NULL)
 		exit(1);
+	return (tmp);
+}
+
+char	**minishell_split(char *str) // функция разбития строки в двумерный массив строк
+{
+	char		**tmp;
+	t_minisplit	m;
+
+	tmp = ft_initialization(tmp, &m);
 	while (str[m.i] == ' ')
 		m.i++;
 	while (str[m.i])
@@ -138,6 +116,8 @@ char	**minishell_split(char *str) // функция разбития строк�
 			case_single_quotes(&m, str, tmp);
 		else if (str[m.i] == ' ' || str[m.i + 1] == '\0')
 			case_no_quotes(&m, str, tmp);
+		else if (str[m.i] == '>' || str[m.i] == '<' || str[m.i] == '|')
+			case_redirection(&m, str, tmp);
 		else
 			m.i++;
 	}
@@ -145,11 +125,11 @@ char	**minishell_split(char *str) // функция разбития строк�
 	return (tmp);
 }
 
-int	ft_parse(char *str)
+char	**ft_parse(char *str)
 {
 	char	**tmp;
 
-	if (special_character_check(str) || quotes_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
+	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
 		return (FAILURE);
-	tmp = minishell_split(str);
+	tmp = minishell_split(str); // Предусмотреть случай если символ перенаправления ввода/вывода написан слитно с командой
 }

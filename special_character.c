@@ -1,28 +1,87 @@
 #include "minishell.h"
 
-static int check_redirections(char *str)
+static int	check_red_condition(char *s)
 {
-	int	i;
+	if (s[0] == '\0')
+		return (ft_newline_error());
+	else if ((s[0] == '<' && s[1] == '<') 
+		|| (s[0] == '>' && s[1] == '>'))
+		return (ft_syntax_error(2, s[0]));
+	else if (s[0] == '<' || s[0] == '>')
+		return (ft_syntax_error(1, s[0]));
+	else
+		return (SUCCESS);
+}
 
-	i = 0;
-<<<<<<< HEAD
-	if (str[i] == '>' && str[stri + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
-		return (printf("redirection error\n"), FAILURE);
+static int check_red_left(char *str, int *i)
+{
+	if (str[*i] == '<') 
+	{
+		if (str[++(*i)] == '<' && str[*i + 1] != ' ')
+			return (check_red_condition(&str[++(*i)]));
+		else if (str[*i] == '>' && str[(*i) + 1] != ' ')
+			return (check_red_condition(&str[++(*i)]));
+		else if (str[*i] != '<' && str[*i] != '>' && str[*i] != ' ')
+			return (check_red_condition(&str[*i]));
+		if (str[*i] == '<')
+			(*i)++;
+		while (str[++(*i)] && str[*i] == ' ')
+			;
+		return (check_red_condition(&str[*i]));
+	}
 	return (SUCCESS);
-=======
-	if (str[i] == '>' && str[i + 1] == '>' && str[i + 2] == '>') // >>> - error; >> or > - good
-		return (write(1, "redirection error\n", num_characters), 1);
-	return 0;
->>>>>>> ea1ce59b11a1ac5890318978d79d4db5c03caf39
-} 
+}
 
-static int check_pipes(char *str)
+static int check_red_right(char *str, int *i)
 {
-	int	i;
+	if (str[*i] == '>')
+	{
+		if (str[++(*i)] == '>' && str[*i + 1] != ' ')
+			return (check_red_condition(&str[++(*i)]));
+		else if (str[*i] != '>' && str[*i] != ' ')
+			return (check_red_condition(&str[*i]));
+		if (str[*i] == '>')
+			(*i)++;
+		while (str[++(*i)] && str[*i] == ' ')
+			;
+		return (check_red_condition(&str[*i]));
+	}
+	return (SUCCESS);
+}
 
-	i = 0;
-	if (str[i] == '|' && str[i + 1] == '|') // | - good; || - not good 
-		return (printf("pipe error\n"), FAILURE);
+static int check_pipe_back(char *s, int *i)
+{
+	int  j;
+	int  len;
+
+	len = (*i);
+	while (--len >= 0)
+		if (s[len] != '\0' && s[len] != ' '
+			&& s[len] != '<' && s[len] != '>')
+			return (SUCCESS);
+	return (ft_syntax_error(1, '|'));
+}
+
+static int  check_pipe_newline(char *s, int *i)
+{
+	while (s[++(*i)] && s[*i] == ' ')
+		;
+	if (s[*i] != '\0')
+		return (SUCCESS);
+	return (ft_newline_error());
+}
+
+static int check_pipes(char *str, int *i)
+{
+	if(str[*i] == '|')
+	{
+		if (str[*i] == '|' && str[(*i) + 1] == '|') 
+			return (ft_syntax_error(2, '|'));
+		else if (str[*i] == '|' && str[(*i) + 1] == '\0')
+			return (ft_syntax_error(1, '|'));
+		else if (check_pipe_back(str, i) || check_pipe_newline(str, i))
+			return (FAILURE);
+	}
 	return (SUCCESS);
 }
 
@@ -30,24 +89,24 @@ int	special_character_check(char *str) // проверка на недопуст
 {
 	int	i;
 
-	i = -1;
-	while (str[++i] != '\0')
+	i = 0;
+	while (str[i] != '\0')
 	{
-		if (str[i] == '\"' && ft_strchr(&str[i + 1], '\"')) //ищем вхождение символа "
-			while (str[++i] != '\"') //проматываем строку до первого вхождения данного символа
+		if (str[i] == '\"' && ft_strchr(&str[i + 1], '\"'))
+			while (str[++i] != '\"')
 				;
-		else if (str[i] == '\'' && ft_strchr(&str[i + 1], '\'')) //тоже самое для '
+		else if (str[i] == '\'' && ft_strchr(&str[i + 1], '\''))
 			while (str[++i] != '\'') 
 				;
+		if (str[i] == "\"" || str[i] == "\'")
+			i++;
 		if (str[i] == '\\' || str[i] == ';') // bonus: || и &&
-		{
-			write(1, "some error\n", 11)
+			return (ft_syntax_error(1, str[i]));
+		if (check_red_left(str, &i) || check_red_right(str, &i) || check_pipes(str, &i))
 			return (FAILURE);
-		}
-		if (check_pipes(&str[i]) || check_rediretions(&str[i]))
-			return (FAILURE);
+	else 
+		i++;
 	}
-<<<<<<< HEAD
 	return (SUCCESS);
 }
 
@@ -79,10 +138,5 @@ int	quotes_check(char *str) // проверяем на незыкрытые ка
 			s_q = quotes_counter(str, &i, s_q, '\'');
 		i++;
 	}
-	if (d_q % 2 != 0 || s_q % 2 != 0)
-		return (printf("error: unclosed quotes\n"), FAILURE);
-	return (SUCCESS);
+	return (ft_quotes_error(d_q, s_q));
 }
-=======
-}
->>>>>>> ea1ce59b11a1ac5890318978d79d4db5c03caf39
