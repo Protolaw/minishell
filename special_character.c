@@ -66,6 +66,8 @@ static int  check_pipe_newline(char *s, int *i)
 {
 	while (s[++(*i)] && s[*i] == ' ')
 		;
+	if (s[*i] == '|')
+		return (ft_syntax_error(1, '|'));
 	if (s[*i] != '\0')
 		return (SUCCESS);
 	return (ft_newline_error());
@@ -98,14 +100,12 @@ int	special_character_check(char *str) // проверка на недопуст
 		else if (str[i] == '\'' && ft_strchr(&str[i + 1], '\''))
 			while (str[++i] != '\'') 
 				;
-		if (str[i] == "\"" || str[i] == "\'")
-			i++;
 		if (str[i] == '\\' || str[i] == ';') // bonus: || и &&
 			return (ft_syntax_error(1, str[i]));
 		if (check_red_left(str, &i) || check_red_right(str, &i) || check_pipes(str, &i))
 			return (FAILURE);
-	else 
-		i++;
+		else 
+			i++;
 	}
 	return (SUCCESS);
 }

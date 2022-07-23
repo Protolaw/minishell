@@ -84,16 +84,38 @@ static void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-static void	case_redirection(t_minisplit *m, char *str, char **tmp)
+static void case_redirection(t_minisplit *m, char *str, char **tmp) 
 {
-	//block
+	char *buf;
+	char red;
+
+	red = str[m->i];
+	if (str[m->i - 1] != ' ') 
+	{
+		buf = ft_substr(str, m->start, (m->i));
+		buf = ft_empty(buf);
+		tmp[m->row] = ft_empty(tmp[m->row]);
+		tmp[m->row] = ft_minijoin(tmp[m->row], buf);
+		m->row++;
+		m->start = m->i;
+	}
+	while (str[++m->i] && str[m->i] == red)
+		;
+	buf = ft_substr(str, m->start, (m->i));
+	buf = ft_empty(buf);
+	tmp[m->row] = ft_empty(tmp[m->row]);
+	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
+	m->row++;
+	while (str[m->i] && str[m->i] == ' ')
+		m->i++;
+	m->start = m->i;
 }
 
-char	**ft_initialization(char **tmp, t_minisplit *m)
+char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 {
-	m.i = 0;
-	m.row = 0;
-	m.start = 0;
+	m->i = 0;
+	m->row = 0;
+	m->start = 0;
 	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
 	if (tmp == NULL)
 		exit(1);
@@ -105,7 +127,7 @@ char	**minishell_split(char *str) // функция разбития строк�
 	char		**tmp;
 	t_minisplit	m;
 
-	tmp = ft_initialization(tmp, &m);
+	tmp = ft_initialization(str, tmp, &m);
 	while (str[m.i] == ' ')
 		m.i++;
 	while (str[m.i])
@@ -121,7 +143,7 @@ char	**minishell_split(char *str) // функция разбития строк�
 		else
 			m.i++;
 	}
-	tmp[m.i] = NULL;
+	tmp[++m.row] = NULL;
 	return (tmp);
 }
 
@@ -130,11 +152,7 @@ char	**ft_parse(char *str)
 	char	**tmp;
 
 	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
-		return (FAILURE);
-<<<<<<< HEAD
+		return (NULL);
 	tmp = minishell_split(str); // Предусмотреть случай если символ перенаправления ввода/вывода написан слитно с командой
+	return (tmp);
 }
-=======
-	tmp = minishell_split(str); // Предусмотреть случай если символ перенаправления ввода написан слитно с командой, в таком случае тоже требуется разделить на строки
-}
->>>>>>> 63fc87fe3184ba9ffb64505010bdea1ed874a976
