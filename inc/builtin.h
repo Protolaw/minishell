@@ -10,5 +10,6 @@ int     exec_exit(char *str);
 int     exec_echo(char *str);
 int     exec_export(char *str);
 int		exec_unset(char *str);
+int     ft_isbuiltin(char *str);
 
 #endif
