@@ -1,7 +1,5 @@
 
-#include "../inc/builtin.h"
-
-// Печать переменных окружения
+#include "builtin.h"
 
 int	ft_print_env(char **env)
 {

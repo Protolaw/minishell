@@ -12,6 +12,7 @@ int     print_err_errno(char *s1, char *s2);
 int     ft_err_print(char *s1, char *s2, char *err_log);
 
 int     split_count(char **split);
+void	split_sort(char **split);
 int     env_rm_value(char ***split, char *key);
 int     env_replace_value(char ***split, char *old_str, char *new_str);
 int     env_add_value(char ***split, char *new_str);

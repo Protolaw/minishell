@@ -1,29 +1,19 @@
 
-#include "../inc/env.h"
+#include "env.h"
 
-int	ft_init_env()
+int env_is_var_char(char c)
 {
-	extern char	**environ;
-	int			i;
+	return (ft_isalnum(c) || c == '_');
+}
 
-	i = split_count(environ);
-	if (i == 0)
-		return (0);
-	g_env = malloc((i + 1) * sizeof(char *));
-	if (g_env == NULL)
-		return (1);
-	i = -1;
-	while (environ[++i])
+int	shell_set(void)
+{
+	if (get_value_env("SHELL"))
 	{
-		g_env[i] = ft_strdup(environ[i]);
-		if (g_env[i] == NULL)
-		{
-			ft_free_split(g_env);
-			return (1);
-		}
+		if (env_set_var("SHELL", SHELL_NAME) == -1)
+			return (0);
 	}
-	g_env[i] = NULL;
-	return (0);
+	return (1);
 }
 
 char	*env_find_var(char *key)
@@ -63,5 +53,32 @@ int	env_var_is_value(char *var_name, char *value)
 	if (env_value)
 		if (ft_strncmp(env_value, value, ft_strlen(value) + 1) == 0)
 			return (1);
+	return (0);
+}
+
+int	ft_init_env(void)
+{
+	extern char	**environ;
+	int			i;
+
+	i = split_count(environ);
+	if (i == 0)
+		return (0);
+	g_env = malloc((i + 1) * sizeof(char *));
+	if (g_env == NULL)
+		return (1);
+	i = -1;
+	while (environ[++i])
+	{
+		g_env[i] = ft_strdup(environ[i]);
+		if (g_env[i] == NULL)
+		{
+			ft_free_split(g_env);
+			return (1);
+		}
+	}
+	g_env[i] = NULL;
+	if (!shell_set())
+		return (1);
 	return (0);
 }

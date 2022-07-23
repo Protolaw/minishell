@@ -1,5 +1,5 @@
 
-#include "../inc/env.h"
+#include "env.h"
 
 int	env_unset_var(char *name)
 {
@@ -34,7 +34,7 @@ int	env_put_var(char *str)
 	return (0);
 }
 
-int	env_set_env(char *name, char *value)
+int	env_set_var(char *name, char *value)
 {
 	char	*var_str;
 	char	*tmp;

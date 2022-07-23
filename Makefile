@@ -6,7 +6,7 @@
 #    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/09 12:33:55 by bbrusco           #+#    #+#              #
-#    Updated: 2022/07/18 17:39:03 by almaz            ###   ########.fr        #
+#    Updated: 2022/07/23 12:17:42 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,8 +25,9 @@ ODIR		= obj
 HEADER		= minishell.h env.h builtin.h utils.h
 SRC			= free.c err.c utils.c main.c
 SRC_ENV		= env.c env_edit.c
-SRC_BLTIN	= b_env.c b_cd.c b_pwd.c b_exit.c
-SRCS		= $(SRC) $(SRC_ENV) $(SRC_BLTIN)
+SRC_BLTIN	= b_env.c b_cd.c b_pwd.c b_exit.c b_echo.c b_export.c b_unset.c
+SRCS_BLTIN	= $(addprefix builtin/, $(SRC_BLTIN))
+SRCS		= $(SRC) $(SRC_ENV) $(SRCS_BLTIN)
 OBJS		= $(addprefix $(ODIR)/, $(SRCS:.c=.o))
 
 LDLIBS		:= $(addprefix -L./, $(LIBDIRS)) $(LDLIBS)
@@ -43,7 +44,7 @@ $(NAME): 	$(OBJS)
 	@echo "\n-- $(NAME) created \n"
 
 $(ODIR)/%.o: $(SDIR)/%.c
-	@mkdir -p ${ODIR}
+	@mkdir -p $(dir $@)
 	@${CC} ${C_FLAGS} -c -o $@ $< $(INCLUDES)
 
 clean:

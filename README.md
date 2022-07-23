@@ -23,12 +23,12 @@ https://www.youtube.com/watch?v=Um3pzuee-4Y
 - [ ] Родитель
 
 # Builtin
-- [ ] echo -n
+- [x] echo -n
 - [x] cd
 - [x] pwd
-- [ ] export
-- [ ] unset
+- [x] export
+- [x] unset
 - [x] env
-- [ ] exit
+- [x] exit
 
 
