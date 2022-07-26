@@ -1,29 +1,5 @@
 #include "minishell.h"
 
-char	*ft_minijoin(char *s1, char *s2) // как обычный join только + еще чистит память за собой
-{
-	size_t	i;
-	size_t	j;
-	char	*sum;
-
-	i = -1;
-	j = 0;
-	if (!s1 || !s2)
-		return (NULL);
-	sum = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!sum)
-		return (NULL);
-	if (s1)
-		while (s1[++i] != '\0')
-			sum[i] = s1[i];
-	while (s2[j] != '\0')
-		sum[i++] = s2[j++];
-	sum[i] = '\0';
-	free(s1);
-	free(s2);
-	return (sum);
-}
-
 char	*ft_empty(char *s1) // чтобы join работал корректно строки не должны быть пусты
 {
 	if (!s1)
@@ -147,12 +123,16 @@ char	**minishell_split(char *str) // функция разбития строк�
 	return (tmp);
 }
 
-char	**ft_parse(char *str)
+char	**ft_parse(char *str, char **envp)
 {
 	char	**tmp;
+	char	**env;
 
 	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
 		return (NULL);
-	tmp = minishell_split(str); // Предусмотреть случай если символ перенаправления ввода/вывода написан слитно с командой
+	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
+	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
+	//free_mass(tmp);
+	tmp = remove_quotes(env);
 	return (tmp);
 }

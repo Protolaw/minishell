@@ -24,14 +24,14 @@ void    ft_sigation(void)
 int main(int argc, char **argv, char **envp)
 {
     char    *str;
-    char    *parsed;
+    char    **parsed;
 
     if (argc != 1 && argv)
         return (FAILURE);
     ft_sigaction(); // https://www.opennet.ru/man.shtml?topic=sigaction&category=2&russian=0
     while (1) 
     {
-        str = readline(BEGIN(49, 34)"Myshell $ "CLOSE);
+        str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
         if (!str)
             break;
         if (str[0] == '\0')
@@ -39,7 +39,7 @@ int main(int argc, char **argv, char **envp)
             free(str);
             continue ;
         }
-        parsed = ft_parse(str);
+        parsed = ft_parse(str, envp);
         if (parsed != NULL)
             // Если все распарсилось без ошибок можно приступать к выполнению команд
         add_history(str);
