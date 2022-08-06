@@ -21,6 +21,9 @@
 # define INPUT 0
 # define OUTPUT 1
 
+# define CREATE 0
+# define APPEND 1
+
 typedef struct s_minisplit
 {
 	int	i;

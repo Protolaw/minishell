@@ -26,6 +26,7 @@ int main(int argc, char **argv, char **envp)
     char    *str;
     char    **parsed;
 
+    parsed = NULL;
     if (argc != 1 && argv)
         return (FAILURE);
     ft_sigaction(); // https://www.opennet.ru/man.shtml?topic=sigaction&category=2&russian=0
@@ -41,9 +42,10 @@ int main(int argc, char **argv, char **envp)
         }
         parsed = ft_parse(str, envp);
         if (parsed != NULL)
-            // Если все распарсилось без ошибок можно приступать к выполнению команд
+            ft_execute(parsed, envp);
         add_history(str);
         free(str);
+        free_mass(parsed);
     }
     return (0);
 }

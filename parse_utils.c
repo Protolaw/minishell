@@ -108,10 +108,13 @@ void	free_mass(char **mass)
 	int	i;
 
 	i = 0;
+	if (mass == NULL)
+		return ;
 	while (mass[i])
 	{
 		free (mass[i]);
 		i++;
 	}
 	free (mass);
+	mass = NULL;
 }
