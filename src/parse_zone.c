@@ -10,7 +10,7 @@ char	*ft_empty(char *s1) // чтобы join работал корректно с
 	return (s1);
 }
 
-static int ft_strlen1(char *s) 
+int	ft_strlen1(char *s) 
 {
 	int i;
 
@@ -124,13 +124,12 @@ static void case_redirection(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
+static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 {
 	m->i = 0;
 	m->row = 0;
 	m->start = 0;
 	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
-	//printf("words: %d\n", words_counter(str));
 	if (tmp == NULL)
 		exit(1);
 	return (tmp);
@@ -162,17 +161,15 @@ char	**minishell_split(char *str) // функция разбития строк�
 	return (tmp);
 }
 
-char	**ft_parse(char *str, char **envp)
+char	**ft_parse(char *str)
 {
 	char	**tmp;
-	//char	**env;
 
-	(void)*envp;
+	tmp = NULL;
 	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
 		return (NULL);
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
-	//free_mass(tmp);
-	//env = remove_quotes(tmp);
+	//tmp = remove_quotes(tmp);
 	return (tmp);
 }

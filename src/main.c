@@ -21,7 +21,7 @@ void    ft_sigaction(void)
     sigaction(SIGQUIT, &s, NULL); //сигнал выхода ctrl+'\' более не обрабатывается
 }
 
-int main(int argc, char **argv, char **envp)
+int main(int argc, char **argv)
 {
     char    *str;
     char    **parsed;
@@ -34,26 +34,26 @@ int main(int argc, char **argv, char **envp)
     while (1) 
     {
         str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
-        /*if (!str)
+        if (!str)
             break;
         if (str[0] == '\0')
         {
             free(str);
             continue ;
-        }*/
-        parsed = ft_parse(str, envp);
+        }
+        parsed = ft_parse(str);
         if (parsed != NULL)
         {
             while(parsed[i])
             {
-                printf("%s\n", parsed[i]);
+                write(1, "ok\n", 3);
                 i++;
             }
            //ft_execute(parsed, envp); 
         }
         add_history(str);
-        free(str);
-        free_mass(parsed);
+        //free(str);
+        parsed = free_mass(parsed);
     }
     return (0);
 }

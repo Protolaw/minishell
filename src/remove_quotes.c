@@ -40,7 +40,7 @@ static char	*no_quotes(char *s)
 
 	i = 0;
 	j = 0;
-	new = (char *)malloc(sizeof(char) * (ft_strlen(s) - 1));
+	new = (char *)malloc(sizeof(char) * (ft_strlen1(s) - 1));
 	if (!new)
 		exit(1);
 	while (s[i])

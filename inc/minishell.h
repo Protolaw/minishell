@@ -36,8 +36,9 @@ int		ft_newline_error(void);
 int		ft_quotes_error(int d_q, int s_q);
 int		ft_syntax_error(int d, char c);
 
+int 	ft_strlen1(char *s);
 int		special_character_check(char *str);
-char	**ft_parse(char *str, char **envp);
+char	**ft_parse(char *str);
 char	**minishell_split(char *str);
 char	**remove_quotes(char **argv);
 char	*ft_empty(char *s1);
@@ -45,7 +46,7 @@ char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
 int		quotes_check(char *str);
-void	free_mass(char **mass);
+char	**free_mass(char **mass);
 char	*ft_minisubstr(char *s, int start, int len);
 
 #endif
