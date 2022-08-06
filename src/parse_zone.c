@@ -93,6 +93,7 @@ char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	m->row = 0;
 	m->start = 0;
 	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
+	//printf("%d\n", words_counter(str));
 	if (tmp == NULL)
 		exit(1);
 	return (tmp);
@@ -103,6 +104,7 @@ char	**minishell_split(char *str) // функция разбития строк�
 	char		**tmp;
 	t_minisplit	m;
 
+	tmp = NULL;
 	tmp = ft_initialization(str, tmp, &m);
 	while (str[m.i] == ' ')
 		m.i++;
@@ -128,11 +130,12 @@ char	**ft_parse(char *str, char **envp)
 	char	**tmp;
 	char	**env;
 
+	(void)*envp;
 	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
 		return (NULL);
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
 	//free_mass(tmp);
-	tmp = remove_quotes(env);
-	return (tmp);
+	env = remove_quotes(tmp);
+	return (env);
 }

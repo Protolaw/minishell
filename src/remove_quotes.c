@@ -37,7 +37,6 @@ static char	*no_quotes(char *s)
 	int		i;
 	int		j;
 	char	*new;
-	char	q;
 
 	i = 0;
 	j = 0;

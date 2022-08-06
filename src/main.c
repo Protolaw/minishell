@@ -11,7 +11,7 @@ void    signal_processing(signum)
     }
 }
 
-void    ft_sigation(void)
+void    ft_sigaction(void)
 {
     struct sigaction	s;
 
@@ -25,6 +25,8 @@ int main(int argc, char **argv, char **envp)
 {
     char    *str;
     char    **parsed;
+    int i = 0;
+    char    *test = "gdgdf ghfgh hfghfgh";
 
     parsed = NULL;
     if (argc != 1 && argv)
@@ -40,9 +42,16 @@ int main(int argc, char **argv, char **envp)
             free(str);
             continue ;
         }
-        parsed = ft_parse(str, envp);
+        parsed = ft_parse(test, envp);
         if (parsed != NULL)
-            ft_execute(parsed, envp);
+        {
+            while(parsed[i])
+            {
+                printf("%s\n", parsed[i]);
+                i++;
+            }
+           //ft_execute(parsed, envp); 
+        }
         add_history(str);
         free(str);
         free_mass(parsed);

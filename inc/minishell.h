@@ -10,11 +10,12 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 
+# include "../libft/libft.h"
+
 # define CLOSE "\001\033[0m\002"
 # define BLOD "\001\033[1m\002"
 # define BEGIN(x,y) "\001\033["#x";"#y"m\002"
 
-//для лучшей читаемости кода
 # define SUCCESS 0
 # define FAILURE 1
 
@@ -31,17 +32,19 @@ typedef struct s_minisplit
 	int	start;
 }	t_minisplit;
 
+int		ft_newline_error(void);
 int		ft_quotes_error(int d_q, int s_q);
-int		ft_syntax_error(int d, char c)
+int		ft_syntax_error(int d, char c);
 
 int		special_character_check(char *str);
-int		ft_parse(char *str);
+char	**ft_parse(char *str, char **envp);
 char	**minishell_split(char *str);
 char	**remove_quotes(char **argv);
 char	*ft_empty(char *s1);
 char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
-int		quotes_check(char *str)
+int		quotes_check(char *str);
+void	free_mass(char **mass);
 
 #endif

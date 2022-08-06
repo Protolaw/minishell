@@ -51,7 +51,6 @@ static int check_red_right(char *str, int *i)
 
 static int check_pipe_back(char *s, int *i)
 {
-	int  j;
 	int  len;
 
 	len = (*i);

@@ -17,6 +17,7 @@ int	check_sym(char *s)
 	}
 	return (0);
 }
+
 char	**environment_variables(char **tmp)
 {
 	int		i;
@@ -27,7 +28,7 @@ char	**environment_variables(char **tmp)
 	i = 0;
 	j = 0;
 	str = NULL;
-	env = (char **)malloc(sizeof(char *) * (strlen_mass(tmp) + 1))
+	env = (char **)malloc(sizeof(char *) * (strlen_mass(tmp) + 1));
 	if (!env)
 		exit (1);
 	while (tmp[i])
