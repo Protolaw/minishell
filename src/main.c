@@ -25,8 +25,7 @@ int main(int argc, char **argv, char **envp)
 {
     char    *str;
     char    **parsed;
-    int i = 0;
-    char    *test = "gdgdf ghfgh hfghfgh";
+    int     i = 0;
 
     parsed = NULL;
     if (argc != 1 && argv)
@@ -35,14 +34,14 @@ int main(int argc, char **argv, char **envp)
     while (1) 
     {
         str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
-        if (!str)
+        /*if (!str)
             break;
         if (str[0] == '\0')
         {
             free(str);
             continue ;
-        }
-        parsed = ft_parse(test, envp);
+        }*/
+        parsed = ft_parse(str, envp);
         if (parsed != NULL)
         {
             while(parsed[i])

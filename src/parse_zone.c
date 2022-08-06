@@ -10,6 +10,43 @@ char	*ft_empty(char *s1) // чтобы join работал корректно с
 	return (s1);
 }
 
+static int ft_strlen1(char *s) 
+{
+	int i;
+
+	i = 0;
+	while (s[i])
+		i++;
+	return (i);
+}
+
+char *ft_minisubstr(char *s, int start, int len) 
+{
+	char *tab;
+	int i;
+	int j;
+
+	tab = NULL;
+	if (s == 0)
+		return (0);
+	if (len >= ft_strlen1(s))
+		tab = malloc(sizeof(char) * (ft_strlen1(s) + 1));
+	else if (len < ft_strlen1(s))
+		tab = malloc(sizeof(char) * (len + 1));
+	if (tab == NULL)
+		return (0);
+	i = 0;
+	j = 0;
+	while (s[i] != '\0') 
+	{
+		if (i >= start && i < len)
+			tab[j++] = s[i];
+		i++;
+  	}
+	tab[j] = '\0';
+	return (tab);
+}
+
 static void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	char	*buf;
@@ -17,7 +54,7 @@ static void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 	m->i++;
 	while (str[m->i] && str[m->i] != '\"')
 		m->i++;
-	buf = ft_substr(str, m->start, (m->i + 1));
+	buf = ft_minisubstr(str, m->start, (m->i + 1));
 	m->i++;
 	buf = ft_empty(buf);
 	tmp[m->row] = ft_empty(tmp[m->row]);
@@ -32,7 +69,7 @@ static void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
 	m->i++;
 	while (str[m->i] && str[m->i] != '\'')
 		m->i++;
-	buf = ft_substr(str, m->start, (m->i + 1));
+	buf = ft_minisubstr(str, m->start, (m->i + 1));
 	m->i++;
 	buf = ft_empty(buf);
 	tmp[m->row] = ft_empty(tmp[m->row]);
@@ -48,7 +85,7 @@ static void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 	end_sym = 0;
 	if (str[(m->i) + 1] == '\0' && str[m->i] != ' ')
 		end_sym = 1;
-	buf = ft_substr(str, (m->start), ((m->i) + end_sym)); // откусываем от основной строки нужный нам кусок
+	buf = ft_minisubstr(str, (m->start), ((m->i) + end_sym)); // откусываем от основной строки нужный нам кусок
 	m->i += end_sym;
 	buf = ft_empty(buf);
 	tmp[m->row] = ft_empty(tmp[m->row]);
@@ -68,7 +105,7 @@ static void case_redirection(t_minisplit *m, char *str, char **tmp)
 	red = str[m->i];
 	if (str[m->i - 1] != ' ') 
 	{
-		buf = ft_substr(str, m->start, (m->i));
+		buf = ft_minisubstr(str, m->start, (m->i));
 		buf = ft_empty(buf);
 		tmp[m->row] = ft_empty(tmp[m->row]);
 		tmp[m->row] = ft_minijoin(tmp[m->row], buf);
@@ -77,7 +114,7 @@ static void case_redirection(t_minisplit *m, char *str, char **tmp)
 	}
 	while (str[++m->i] && str[m->i] == red)
 		;
-	buf = ft_substr(str, m->start, (m->i));
+	buf = ft_minisubstr(str, m->start, (m->i));
 	buf = ft_empty(buf);
 	tmp[m->row] = ft_empty(tmp[m->row]);
 	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
@@ -93,7 +130,7 @@ char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	m->row = 0;
 	m->start = 0;
 	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
-	//printf("%d\n", words_counter(str));
+	//printf("words: %d\n", words_counter(str));
 	if (tmp == NULL)
 		exit(1);
 	return (tmp);
@@ -128,7 +165,7 @@ char	**minishell_split(char *str) // функция разбития строк�
 char	**ft_parse(char *str, char **envp)
 {
 	char	**tmp;
-	char	**env;
+	//char	**env;
 
 	(void)*envp;
 	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
@@ -136,6 +173,6 @@ char	**ft_parse(char *str, char **envp)
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
 	//free_mass(tmp);
-	env = remove_quotes(tmp);
-	return (env);
+	//env = remove_quotes(tmp);
+	return (tmp);
 }

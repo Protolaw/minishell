@@ -46,5 +46,6 @@ int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
 int		quotes_check(char *str);
 void	free_mass(char **mass);
+char	*ft_minisubstr(char *s, int start, int len);
 
 #endif
