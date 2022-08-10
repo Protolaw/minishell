@@ -129,7 +129,7 @@ static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	m->i = 0;
 	m->row = 0;
 	m->start = 0;
-	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 1));
+	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 10));
 	if (tmp == NULL)
 		exit(1);
 	return (tmp);
@@ -170,6 +170,6 @@ char	**ft_parse(char *str)
 		return (NULL);
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
-	//tmp = remove_quotes(tmp);
+	tmp = remove_quotes(tmp);
 	return (tmp);
 }

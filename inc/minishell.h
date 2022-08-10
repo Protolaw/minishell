@@ -46,7 +46,8 @@ char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
 int		quotes_check(char *str);
-char	**free_mass(char **mass);
+void	**free_mass(char **mass);
+void	ft_execute(char **argv, char **envp);
 char	*ft_minisubstr(char *s, int start, int len);
 
 #endif

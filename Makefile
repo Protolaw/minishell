@@ -25,7 +25,7 @@ ODIR		= obj
 HEADER		= minishell.h
 SRC			= main.c parse_errors.c \
 				parse_utils.c parse_zone.c remove_quotes.c \
-				special_character.c
+				special_character.c executing.c
 
 SRCS		= $(SRC)
 OBJS		= $(addprefix $(ODIR)/, $(SRCS:.c=.o))

@@ -40,21 +40,6 @@ int	pipe_counter(char **argv)
 	return (count);	
 }
 
-/*int	no_pipe_case(char **argv, t_pipex *p, char **envp)
-{
-	char	*path;
-}*/
-
-void	ft_piper(char **argv, t_pipex *p, char **envp)
-{
-	p->pipe_num = pipe_counter(argv)
-	if (p->pipe_num == 0)
-		return ; //no_pipe_case(argv, p, envp);
-	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1))
-	if (!(p->pipes))
-		exit(1);
-}
-
 void close_pipe(t_pipex *p)
 {
 	close(p->pipefd[1])
@@ -219,9 +204,16 @@ char	**get_cmd(char **argv, t_pipex *p, char **envp)
 	return (cmd);
 }
 
+int check_built_in(char **cmd, char **envp)
+{
+	if (cmd || envp)
+		return 0;
+	return 0; // Случай как поступить с built_in тут разберешь? 
+}
+
 void	child_process(char **argv, t_pipex *p, char **envp)
 {
-	char	*path
+	char	*path;
 	char	**cmd;
 
 	cmd = get_cmd(argv, p, envp);
@@ -229,11 +221,11 @@ void	child_process(char **argv, t_pipex *p, char **envp)
 	if (!cmd || check_built_in(cmd, envp)) // провервка команды на built-in
 		exit(1);
 	path = get_path(envp, cmd[0]);
-	execve(path, cmd, 0);
-	//perror("cmd execution error");
-	//free_arr(cmd);
-	//free(path);
-	//exit(1);
+	execve(path, cmd, envp);
+	perror("cmd execution error");
+	free_mass(cmd);
+	free(path);
+	exit(1);
 }
 
 void	wait_exit(t_pipex	*p)
@@ -275,6 +267,41 @@ void	pipe_execute(char **argv, t_pipex *p, char **envp)
 	wait_exit(p);
 }
 
+void	no_pipe_case(char **argv, t_pipex *p, char **envp)
+{
+	char	*path;
+	char	**cmd;
+	pid_t	pid;
+
+	p->std_out = 1;
+	cmd = get_cmd(argv, p, envp);
+	dupper(p->std_in, p->std_out);
+	if (!cmd || check_built_in(cmd, envp))
+		exit(1);
+	pid = fork();
+	if (pid == -1)
+		exit(1);
+	if (pid == 0)
+	{
+		path = get_path(envp, cmd[0]);
+		execve(path, cmd, envp);
+		perror("cmd execution error");
+		free_mass(cmd);
+		free(path);
+		exit(1);
+	}
+}
+
+void	ft_piper(char **argv, t_pipex *p, char **envp)
+{
+	p->pipe_num = pipe_counter(argv);
+	if (p->pipe_num == 0)
+		no_pipe_case(argv, p, envp);
+	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1))
+	if (!(p->pipes))
+		exit(1);
+}
+
 void	ft_execute(char **argv, char **envp)
 {
 	t_pipex	p;
@@ -284,6 +311,6 @@ void	ft_execute(char **argv, char **envp)
 	p->pipefd[1] = 1;
 	if (here_doc_check(argv))
 		return ; // предусмотреть случай для heredoc
-	ft_piper(argv, &p, envp))
+	ft_piper(argv, &p, envp));
 	pipex_execute(argv, &p, envp);
 }

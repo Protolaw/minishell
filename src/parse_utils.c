@@ -102,19 +102,18 @@ int	words_counter(char *str) //функция подсчета требуемо�
 	return (count);
 }
 
-char	**free_mass(char **mass)
+void	**free_mass(char **mass)
 {
 	int	i;
 
 	i = 0;
 	if (mass == NULL)
-		return (NULL);
-	while (mass[i] != NULL)
+		return ;
+	while (mass[i])
 	{
 		free(mass[i]);
 		i++;
 	}
 	free(mass);
 	mass = NULL;
-	return (mass);
 }

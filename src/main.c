@@ -44,15 +44,10 @@ int main(int argc, char **argv)
         parsed = ft_parse(str);
         if (parsed != NULL)
         {
-            while(parsed[i])
-            {
-                write(1, "ok\n", 3);
-                i++;
-            }
            //ft_execute(parsed, envp); 
         }
         add_history(str);
-        //free(str);
+        free(str);
         parsed = free_mass(parsed);
     }
     return (0);
