@@ -18,7 +18,7 @@ int	here_doc_check(char **argv)
 	while (argv[i])
 	{
 		if (ft_strncmp(argv[i], "<<\0", 3) == 0)
-			return (1)
+			return (1);
 		i++;
 	}
 	return (0);
@@ -33,7 +33,7 @@ int	pipe_counter(char **argv)
 	count = 0;
 	while(argv[i])
 	{
-		if (ft_strncmp(argv[i], '|\0', 2) == 0)
+		if (ft_strncmp(argv[i], "|\0", 2) == 0)
 			count++;
 		i++;
 	}
@@ -42,7 +42,7 @@ int	pipe_counter(char **argv)
 
 void close_pipe(t_pipex *p)
 {
-	close(p->pipefd[1])
+	close(p->pipefd[1]);
 	if (p->close)
 		close(p->close);
 	p->std_in = p->pipefd[0];
@@ -100,7 +100,7 @@ char	*get_path(char **envp, char *cmd)
 			if (!path)
 				return (NULL);
 			fullpath = path_combine(path, cmd);
-			free_arr(path);
+			free_mass(path);
 			return (fullpath);
 		}
 		i++;
@@ -146,17 +146,17 @@ int	input_red(char *input)
 
 int	get_file_descriptor(char *red, char *file, t_pipex *p)
 {
-	if (!(strncmp(str, ">\0", 2)))
+	if (!(strncmp(red, ">\0", 2)))
 	{
 		p->std_out = output_red(file, CREATE);
 		return (p->std_out);
 	}
-	else if (!(strncmp(str, ">>\0", 3)))
+	else if (!(strncmp(red, ">>\0", 3)))
 	{
 		p->std_out = output_red(file, APPEND);
 		return (p->std_out);
 	}
-	else if (!(strncmp(str, "<\0", 2)))
+	else if (!(strncmp(red, "<\0", 2)))
 	{
 		p->std_in = input_red(file);
 		return (p->std_in);
@@ -174,7 +174,7 @@ int	redirection_case(char **argv, int *i, t_pipex *p)
 	if (argv[*i + 2] == 0)
 		return (1);
 	else
-		*i++;
+		i++;
 	return (0);
 }
 
@@ -185,13 +185,16 @@ char	**get_cmd(char **argv, t_pipex *p, char **envp)
 	char	*str;
 
 	i = 0;
+	envp[0] = 0; // Unused
 	while (argv[i])
 	{
 		if (argv[i][0] == '|' && argv[i][1] == '\0')
 			break ;
 		if (check_red(argv[i]))
+		{
 			if (redirection_case(argv, &i, p))
 				exit(1);
+		}
 		else
 		{
 			str = ft_strjoin(str, ft_strdup(argv[i]));
@@ -236,7 +239,7 @@ void	wait_exit(t_pipex	*p)
 	i = 0;
 	while (i <= p->pipe_num)
 	{
-		waitpid(pipes[i], &status, 0);
+		waitpid(p->pipes[i], &status, 0);
 		i++;
 	}
 	free(p->pipes);
@@ -253,7 +256,7 @@ void	pipe_execute(char **argv, t_pipex *p, char **envp)
 			p->std_out = 1;
 		else if (p->pipe_num > 0)
 		{
-			pipe(p->pipefd)
+			pipe(p->pipefd);
 			p->std_out = p->pipefd[1];
 		}
 		p->pipes[i] = fork();
@@ -297,7 +300,7 @@ void	ft_piper(char **argv, t_pipex *p, char **envp)
 	p->pipe_num = pipe_counter(argv);
 	if (p->pipe_num == 0)
 		no_pipe_case(argv, p, envp);
-	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1))
+	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1));
 	if (!(p->pipes))
 		exit(1);
 }
@@ -306,11 +309,11 @@ void	ft_execute(char **argv, char **envp)
 {
 	t_pipex	p;
 
-	p->std_in = 0;
-	p->std_out = 1;
-	p->pipefd[1] = 1;
+	p.std_in = 0;
+	p.std_out = 1;
+	p.pipefd[1] = 1;
 	if (here_doc_check(argv))
 		return ; // предусмотреть случай для heredoc
-	ft_piper(argv, &p, envp));
-	pipex_execute(argv, &p, envp);
+	ft_piper(argv, &p, envp);
+	pipe_execute(argv, &p, envp);
 }

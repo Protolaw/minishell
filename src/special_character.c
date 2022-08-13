@@ -139,3 +139,65 @@ int	quotes_check(char *str) // проверяем на незыкрытые ка
 	}
 	return (ft_quotes_error(d_q, s_q));
 }
+
+int is_valid_str(char *str, int i)
+{
+	while (i > 0 && str[i] && ft_isspace(str[i]))
+		i--;
+	if (i >= 0 && (str[i] != '&' && str[i] != '|'))
+		return (0);
+	return (1);
+}
+
+int	has_opening_bracket(char *line, int i)
+{
+	while (i > 0 && line[i] && line[i] != '(')
+		i--;
+	if (i >= 0 && line[i] != '(')
+		return (0);
+	return (1);
+}
+
+int	count_chars(char *str, char c)
+{
+	int	i;
+	int	count;
+
+	i = 0;
+	count = 0;
+	while (str[i])
+	{		
+		if (str[i] == '\'')
+			while (str[i] && str[i+1] != '\'')
+				i++;
+		if (str[i] == '\"')
+			while (str[i] && str[i+1] != '\"')
+				i++;
+		if (str[i] == c)
+			count++;
+		if (str[i])
+			i++;
+	}
+	return (count);
+}
+
+int brackets_check(char *str)
+{
+	int i;
+
+	i = 0;
+	if (count_chars(str, '(') != count_chars(str, ')'))// Чекаем количество открытых и закрытых скобок
+		return (ft_syntax_error(1, '(')); // Exit_status
+	while (str[i])
+	{
+		if (str[i] == '(')
+			if (!is_valid_str(str, i - 1))
+				return (ft_syntax_error(1, '('));
+		if (str[i] == ')')
+			if (!has_opening_bracket(str, i - 1))
+				return (ft_syntax_error(1, '('));
+		if (str[i])
+			i++;
+	}
+	return (0);
+}

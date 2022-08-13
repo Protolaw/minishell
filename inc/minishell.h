@@ -2,8 +2,10 @@
 # define MINISHELL_H
 
 # include <stdio.h>
+# include <unistd.h>
 # include <stdlib.h>
 # include <errno.h>
+# include <fcntl.h>
 # include <signal.h>
 # include <sys/wait.h>
 # include <sys/types.h>
@@ -46,8 +48,10 @@ char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
 int		quotes_check(char *str);
-void	**free_mass(char **mass);
+void	free_mass(char **mass);
 void	ft_execute(char **argv, char **envp);
 char	*ft_minisubstr(char *s, int start, int len);
+
+int		brackets_check(char *str);
 
 #endif

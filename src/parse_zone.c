@@ -5,6 +5,8 @@ char	*ft_empty(char *s1) // чтобы join работал корректно с
 	if (!s1)
 	{
 		s1 = (char *)malloc(sizeof(char) * 1);
+		if (s1 == NULL)
+			return (NULL);
 		s1[0] = '\0';
 	}
 	return (s1);
@@ -47,7 +49,7 @@ char *ft_minisubstr(char *s, int start, int len)
 	return (tab);
 }
 
-static void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
+void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	char	*buf;
 
@@ -62,7 +64,7 @@ static void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-static void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
+void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	char	*buf;
 
@@ -77,12 +79,13 @@ static void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-static void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
+void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	int		end_sym;
 	char	*buf;
   
 	end_sym = 0;
+	buf = NULL;
 	if (str[(m->i) + 1] == '\0' && str[m->i] != ' ')
 		end_sym = 1;
 	buf = ft_minisubstr(str, (m->start), ((m->i) + end_sym)); // откусываем от основной строки нужный нам кусок
@@ -97,7 +100,7 @@ static void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 	m->start = m->i;
 }
 
-static void case_redirection(t_minisplit *m, char *str, char **tmp) 
+void case_redirection(t_minisplit *m, char *str, char **tmp) 
 {
 	char *buf;
 	char red;
@@ -129,7 +132,8 @@ static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	m->i = 0;
 	m->row = 0;
 	m->start = 0;
-	tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 10));
+	tmp = ft_calloc((words_counter(str) + 1), sizeof(char *)); // Решил выделять память так с заполнением 0
+	// tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 10));
 	if (tmp == NULL)
 		exit(1);
 	return (tmp);
@@ -166,10 +170,10 @@ char	**ft_parse(char *str)
 	char	**tmp;
 
 	tmp = NULL;
-	if (quotes_check(str) || special_character_check(str)) //тут мы чекаем на неразрешенные символы и незакрытые кавычки
-		return (NULL);
+	if (quotes_check(str) || special_character_check(str) || brackets_check(str)) //Чекаем на неразрешенные символы и незакрытые кавычки и скобки
+		return (NULL); // Exit_status
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
-	tmp = remove_quotes(tmp);
+	// tmp = remove_quotes(tmp);
 	return (tmp);
 }

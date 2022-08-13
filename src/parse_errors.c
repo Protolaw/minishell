@@ -2,7 +2,7 @@
 
 int	ft_newline_error(void)
 {
-	printf("syntax error near unexpected token `newline'\n");
+	printf("syntax error near unexpected token 'newline'\n");
 	return (FAILURE);
 }
 

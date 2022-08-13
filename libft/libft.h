@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: almaz <almaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/08 11:54:31 by bbrusco           #+#    #+#             */
-/*   Updated: 2021/10/10 15:28:15 by bbrusco          ###   ########.fr       */
+/*   Updated: 2022/08/13 16:12:01 by almaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int			ft_atoi(const char *str);
 int			ft_isalpha(int c);
 int			ft_isdigit(int c);
 int			ft_isalnum(int c);
+int			ft_isspace(int c);
 int			ft_isascii(int c);
 int			ft_isprint(int c);
 int			ft_toupper(int c);

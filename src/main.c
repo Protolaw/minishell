@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void    signal_processing(signum)
+void    signal_processing(int signum)
 {
     if (signum == SIGINT)
     {
@@ -15,6 +15,7 @@ void    ft_sigaction(void)
 {
     struct sigaction	s;
 
+    memset(&s, 0, sizeof(s));
     s.sa_handler = &signal_processing; // перезаписываем действие для сигнала перерывания ctrl+c
     s.sa_flags = SA_RESTART; //позволяет некоторым системным вызовам работать, в то время как идет обработка сигналов
     sigaction(SIGINT, &s, NULL); //сигнал прерывания перезаписан выше
@@ -33,6 +34,8 @@ int main(int argc, char **argv)
     ft_sigaction(); // https://www.opennet.ru/man.shtml?topic=sigaction&category=2&russian=0
     while (1) 
     {
+        // parsed = NULL;
+        // str = readline("$");
         str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
         if (!str)
             break;
@@ -42,13 +45,16 @@ int main(int argc, char **argv)
             continue ;
         }
         parsed = ft_parse(str);
+
         if (parsed != NULL)
         {
-           //ft_execute(parsed, envp); 
+            while(parsed[i])
+                printf("%s\n", parsed[i++]);
+        //    ft_execute(parsed, envp); 
         }
         add_history(str);
         free(str);
-        parsed = free_mass(parsed);
+        free_mass(parsed);
     }
     return (0);
 }
