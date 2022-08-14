@@ -34,6 +34,16 @@ typedef struct s_minisplit
 	int	start;
 }	t_minisplit;
 
+typedef struct s_pipex
+{
+	int		std_in;
+	int		std_out;
+	int		close;
+	int		*pipes;
+	int		pipefd[2];
+	int		pipe_num;
+}	t_pipex;
+
 int		ft_newline_error(void);
 int		ft_quotes_error(int d_q, int s_q);
 int		ft_syntax_error(int d, char c);

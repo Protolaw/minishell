@@ -22,11 +22,11 @@ void    ft_sigaction(void)
     sigaction(SIGQUIT, &s, NULL); //сигнал выхода ctrl+'\' более не обрабатывается
 }
 
-int main(int argc, char **argv)
+int main(int argc, char **argv, char **envp)
 {
     char    *str;
     char    **parsed;
-    int     i = 0;
+    //int     i = 0; //fot test
 
     parsed = NULL;
     if (argc != 1 && argv)
@@ -43,12 +43,12 @@ int main(int argc, char **argv)
             continue ;
         }
         parsed = ft_parse(str);
-        i = 0; //for test
+        //i = 0; //for test
         if (parsed != NULL)
         {
-            //ft_execute(parsed, envp);
-            while(parsed[i])
-                printf("%s\n", parsed[i++]); //for test
+            ft_execute(parsed, envp);
+            //while(parsed[i])
+                //printf("%s\n", parsed[i++]); //for test
         }
         add_history(str);
         free(str);
