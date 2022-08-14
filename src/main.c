@@ -34,8 +34,6 @@ int main(int argc, char **argv)
     ft_sigaction(); // https://www.opennet.ru/man.shtml?topic=sigaction&category=2&russian=0
     while (1) 
     {
-        // parsed = NULL;
-        // str = readline("$");
         str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
         if (!str)
             break;
@@ -45,12 +43,12 @@ int main(int argc, char **argv)
             continue ;
         }
         parsed = ft_parse(str);
-
+        i = 0; //for test
         if (parsed != NULL)
         {
+            //ft_execute(parsed, envp);
             while(parsed[i])
-                printf("%s\n", parsed[i++]);
-        //    ft_execute(parsed, envp); 
+                printf("%s\n", parsed[i++]); //for test
         }
         add_history(str);
         free(str);

@@ -147,7 +147,10 @@ char	**minishell_split(char *str) // функция разбития строк�
 	tmp = NULL;
 	tmp = ft_initialization(str, tmp, &m);
 	while (str[m.i] == ' ')
+	{
 		m.i++;
+		m.start++;
+	}
 	while (str[m.i])
 	{
 		if (str[m.i] == '\"')
@@ -174,6 +177,6 @@ char	**ft_parse(char *str)
 		return (NULL); // Exit_status
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
-	// tmp = remove_quotes(tmp);
+	tmp = remove_quotes(tmp);
 	return (tmp);
 }
