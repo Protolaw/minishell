@@ -164,7 +164,7 @@ static int	redirection_case(char **argv, int *i, t_pipex *p)
 	if (argv[*i + 2] == 0)
 		return (1);
 	else
-		i++;
+		(*i)++;
 	return (0);
 }
 
@@ -183,7 +183,7 @@ static char	**get_cmd(char **argv, t_pipex *p)
 		if (check_red(argv[i]))
 		{
 			if (redirection_case(argv, &i, p))
-				exit(1);
+				break ;
 		}
 		else
 		{
@@ -232,6 +232,7 @@ static void	wait_exit(t_pipex	*p)
 	int	status;
 
 	i = 0;
+	status = 0;
 	while (i <= p->pipe_num)
 	{
 		waitpid(p->pipes[i], &status, 0);
@@ -240,13 +241,28 @@ static void	wait_exit(t_pipex	*p)
 	free(p->pipes);
 }
 
+static int	go_next_cmd(int j, char **argv)
+{
+	while (argv[j])
+	{
+		if (argv[j][0] == '|' && argv[j][1] == '\0')
+			return (++j);
+		j++;
+	}
+	return (-1);
+}
+
 static void	pipe_execute(char **argv, t_pipex *p, char **envp)
 {
 	int	i;
+	int	j;
 
 	i = 0;
+	j = 0;
 	while (i <= p->pipe_num)
 	{
+		if (j < 0)
+			break ;
 		if (i == p->pipe_num)
 			p->std_out = 1;
 		else if (p->pipe_num > 0)
@@ -255,14 +271,40 @@ static void	pipe_execute(char **argv, t_pipex *p, char **envp)
 			p->std_out = p->pipefd[1];
 		}
 		p->pipes[i] = fork();
-		if (p->pipes[i]== -1)
+		if (p->pipes[i] == -1)
 			exit(1);
 		if (p->pipes[i] == 0)
-			child_process(argv, p, envp);
+			child_process(&argv[j], p, envp);
 		close_pipe(p);
+		j = go_next_cmd(j, argv);
 		i++;
 	}
 	wait_exit(p);
+	dupper(p->in, p->out);
+}
+
+static void wait_child(pid_t pid)
+{
+	int	status;
+
+	status = 0;
+	waitpid(pid, &status, 0);
+}
+
+static void ft_child(pid_t *pid, char **cmd, char *path, char **envp)
+{
+	*pid = fork();
+	if (*pid == -1)
+		exit(1);
+	if (*pid == 0)
+	{
+		path = get_path(envp, cmd[0]);
+		execve(path, cmd, envp);
+		perror("cmd execution error");
+		free_mass(cmd);
+		free(path);
+		exit(1);
+	}
 }
 
 static void	no_pipe_case(char **argv, t_pipex *p, char **envp)
@@ -272,22 +314,14 @@ static void	no_pipe_case(char **argv, t_pipex *p, char **envp)
 	pid_t	pid;
 
 	p->std_out = 1;
+	path = NULL;
 	cmd = get_cmd(argv, p);
 	dupper(p->std_in, p->std_out);
 	if (!cmd || check_built_in(cmd, envp))
 		exit(1);
-	pid = fork();
-	if (pid == -1)
-		exit(1);
-	if (pid == 0)
-	{
-		path = get_path(envp, cmd[0]);
-		execve(path, cmd, envp);
-		perror("cmd execution error");
-		free_mass(cmd);
-		free(path);
-		exit(1);
-	}
+	ft_child(&pid, cmd, path, envp);
+	wait_child(pid);
+	dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
 }
 
 static int	ft_piper(char **argv, t_pipex *p, char **envp)
@@ -308,6 +342,8 @@ void	ft_execute(char **argv, char **envp)
 {
 	t_pipex	p;
 
+	p.in = dup(0);
+	p.out = dup(1);
 	p.std_in = 0;
 	p.std_out = 1;
 	p.pipefd[1] = 1;

@@ -36,6 +36,8 @@ typedef struct s_minisplit
 
 typedef struct s_pipex
 {
+	int		in;
+	int		out;
 	int		std_in;
 	int		std_out;
 	int		close;
