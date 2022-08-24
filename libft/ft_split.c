@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+        */
+/*   By: almaz <almaz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 16:54:52 by bbrusco           #+#    #+#             */
-/*   Updated: 2021/10/13 16:49:59 by bbrusco          ###   ########.fr       */
+/*   Updated: 2022/08/24 12:04:46 by almaz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,6 @@ char	**ft_split(char const *s, char c)
 				s++;
 		}
 	}
-	par[i] = 0;
+	par[i] = NULL;
 	return (par);
 }

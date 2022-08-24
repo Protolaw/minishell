@@ -5,7 +5,7 @@
 # include "minishell.h"
 
 int     env_is_var_char(char c);
-int		ft_init_env();
+int		ft_init_env(void);
 char	*get_value_env(char *key);
 char	*env_find_var(char *key);
 

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: bbrusco <bbrusco@student.42.fr>            +#+  +:+       +#+         #
+#    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/29 11:53:47 by bbrusco           #+#    #+#              #
-#    Updated: 2022/07/09 15:26:26 by bbrusco          ###   ########.fr        #
+#    Updated: 2022/08/13 16:15:03 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS		=	ft_atoi.c \
 				ft_isalpha.c \
 				ft_isascii.c \
 				ft_isdigit.c \
+				ft_isspace.c \
 				ft_isprint.c \
 				ft_strlcat.c \
 				ft_strlcpy.c \

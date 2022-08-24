@@ -92,3 +92,14 @@ void	split_sort(char **split)
 	}
 }
 
+char	*ft_empty(char *s1) // чтобы join работал корректно строки не должны быть пусты
+{
+	if (!s1)
+	{
+		s1 = (char *)malloc(sizeof(char) * 1);
+		if (s1 == NULL)
+			return (NULL);
+		s1[0] = '\0';
+	}
+	return (s1);
+}

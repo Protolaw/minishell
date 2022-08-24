@@ -47,26 +47,16 @@ int handle_exit(char **split, int exit_num)
 	return (exit_num);
 }
 
-int	exec_exit(char *str)
+int	exec_exit(char **cmd)
 {
-	char **split;
 	int	exit_num;
 
-    split = ft_split(str, ' ');
-    if (split == NULL)
-        return (-1);
-    if (ft_strncmp(split[0], "exit", ft_strlen(split[0])) != 0)
-	{
-		ft_free_split(split);
-		return (-1);
-	}
-    else
-		ft_putstr_fd("exit\n", 2);
+	ft_putstr_fd("exit\n", 2);
 	exit_num = 0;
-	exit_num = handle_exit(split, exit_num);
+	exit_num = handle_exit(cmd, exit_num);
     if (exit_num == -1)
 	{
-		ft_free_split(split);
+		ft_free_split(cmd);
 		return (-1);
 	}
 	ft_free_all();

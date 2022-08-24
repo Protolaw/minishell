@@ -62,22 +62,21 @@ int cd_handle(int i, char *dir, char **split)
 	return (0);
 }
 
-int exec_cd(char *str)
+int exec_cd(char **cmd)
 {
-    char **split;
     int i;
     char *dir;
+	// char *tmp;
 
-    split = ft_split(str, ' '); 
-    i = 0;
-    while (split[i])
-        i++;
-    dir = get_dir(i, split);
-	if (cd_handle(i, dir, split) == -1)
+	i = 0;
+    dir = get_dir(i, cmd);
+	// tmp = get_dir(i, split);
+	// dir = ft_strtrim(tmp, "/");
+	if (cd_handle(i, dir, cmd) == -1)
 	{
-		ft_free_split(split);
+		ft_free_split(cmd);
 		return (-1);
 	}
-	ft_free_split(split);
+	ft_free_split(cmd);
     return (0);
 }

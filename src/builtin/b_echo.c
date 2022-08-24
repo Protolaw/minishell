@@ -2,28 +2,26 @@
 #include "builtin.h"
 
 /// Необходимо обработать строки с кавычками
-int exec_echo(char *str)
+int exec_echo(char **cmd)
 {
-	char **split;
 	int i;
 	int newline;
 
 	newline = 0;
-	split = ft_split(str, ' '); 
 	i = 1;
-	while (split[i] && !ft_strncmp(split[i], "-n", 3))
+	while (cmd[i] && !ft_strncmp(cmd[i], "-n", 3))
 		i++;
 	if (i == 1)
 		newline = 1;
-	while (split[i])
+	while (cmd[i])
 	{
-		ft_putstr_fd(split[i], 1);
-		if (split[i + 1])
+		ft_putstr_fd(cmd[i], 1);
+		if (cmd[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
 	if (newline)
 		ft_putchar_fd('\n', 1);
-	ft_free_split(split);
+	ft_free_split(cmd);
 	return (0);
 }

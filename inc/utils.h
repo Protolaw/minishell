@@ -7,6 +7,7 @@
 void	ft_free_str(char **str);
 void	*ft_free_split(char **split);
 void    ft_free_all(void);
+char	*ft_empty(char *s1);
 
 int     print_err_errno(char *s1, char *s2);
 int     ft_err_print(char *s1, char *s2, char *err_log);

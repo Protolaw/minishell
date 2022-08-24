@@ -64,25 +64,18 @@ int handle_export(char **split, int j)
 	return (0);
 }
 
-int	exec_export(char *str)
+int	exec_export(char **cmd)
 {
 	int	status;
-	char **split;
 	int j;
 
-	split = ft_split(str, ' '); 
-	if (ft_strncmp(split[0], "export", ft_strlen(split[0])) != 0)
-	{
-		ft_free_split(split);
-		return (-1);
-	}
 	j = 0;
-	while (split[j])
+	while (cmd[j])
 		j++;
 	status = EXIT_SUCCESS;
 	if (j == 1)
 		print_vars(); // Надо обработать сохранение экспортов без '=' append'ом и значения с $ (PATH, USER, ...)
-	status = handle_export(split, j);
-	ft_free_split(split);
+	status = handle_export(cmd, j);
+	ft_free_split(cmd);
 	return (status);
 }
