@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-static int	check_quotes(char *s)
+int	check_quotes(char *s)
 {
 	int	i;
 
@@ -32,7 +32,7 @@ static char *check_new(char *new)
 	return (new);
 }
 
-static char	*no_quotes(char *s)
+char	*no_quotes(char *s)
 {
 	int		i;
 	int		j;

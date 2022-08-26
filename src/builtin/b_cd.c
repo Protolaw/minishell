@@ -66,12 +66,9 @@ int exec_cd(char **cmd)
 {
     int i;
     char *dir;
-	// char *tmp;
 
-	i = 0;
+	i = split_count(cmd);
     dir = get_dir(i, cmd);
-	// tmp = get_dir(i, split);
-	// dir = ft_strtrim(tmp, "/");
 	if (cd_handle(i, dir, cmd) == -1)
 	{
 		ft_free_split(cmd);

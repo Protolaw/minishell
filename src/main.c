@@ -24,20 +24,21 @@ void    ft_sigaction(void)
     sigaction(SIGQUIT, &s, NULL); //сигнал выхода ctrl+'\' более не обрабатывается
 }
 
-int	ft_exit(void *to_free, int exit_status)
+int	ft_exit(void *str, int exit_status)
 {
-	char	**args;
+	char	**exit_cmd;
 
 	if (exit_status == EXIT_CTRL_D)
 	{
-		args = ft_calloc(3, sizeof(*args));
-		args[0] = ft_strdup("exit");
-		// args[1] = ft_itoa(get_err_code());
-		// exec_exit(args);
-		ft_free_split(args);
+		exit_cmd = ft_calloc(3, sizeof(*exit_cmd));
+		exit_cmd[0] = ft_strdup("exit");
+		exit_cmd[1] = ft_itoa(get_exit_status());
+		exec_exit(exit_cmd);
+		ft_free_split(exit_cmd);
 	}
 	rl_clear_history();
-	free(to_free);
+	if (!str)
+		free(str);
 	ft_free_split(g_env);
 	return (exit_status);
 }
@@ -45,12 +46,13 @@ int	ft_exit(void *to_free, int exit_status)
 int ft_task(char **envp)
 {
     char    *str;
+    char    *cleaned;
     char    **parsed;
-    // int     i = 0;
 
     parsed = NULL;
     while (1) 
     {
+		cleaned = NULL;
         str = readline(BEGIN(49, 34)"Minishell $ "CLOSE);
         if (str == NULL)
 			return (ft_exit((void *)str, EXIT_CTRL_D));
@@ -61,21 +63,17 @@ int ft_task(char **envp)
             free(str);
             continue ;
         }
-        parsed = ft_parse(str);
-        if (parsed != NULL)
+        cleaned = ft_strtrim(str, " \t");
+        if (!cleaned)
+            return (FAILURE);
+        parsed = ft_parse(cleaned);
+        if (parsed)
         {
-            // i = 0;
-            // while(parsed[i])
-			// {
-            // 	// if (ft_isbuiltin(str) == 0)
-			// 	// 	break;
-			// 	printf("%s\n", parsed[i]);
-			// 	i++;
-			// }
             ft_execute(parsed, envp);
             ft_free_split(parsed);
         }
         free(str);
+        free(cleaned);
     }
 }
 

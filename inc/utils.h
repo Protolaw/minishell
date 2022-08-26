@@ -14,8 +14,14 @@ int     ft_err_print(char *s1, char *s2, char *err_log);
 
 int     split_count(char **split);
 void	split_sort(char **split);
+
 int     env_rm_value(char ***split, char *key);
 int     env_replace_value(char ***split, char *old_str, char *new_str);
 int     env_add_value(char ***split, char *new_str);
+
+char	*no_quotes(char *s);
+int     check_quotes(char *s);
+
+char	*str_append(char *s1, char *s2);
 
 #endif

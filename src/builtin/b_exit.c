@@ -1,11 +1,6 @@
 
 #include "builtin.h"
 
-// int get_exit_status(void)
-// {
-
-// }
-
 int	is_numeric(char *str)
 {
 	int i;
@@ -29,7 +24,7 @@ int handle_exit(char **split, int exit_num)
 	int i;
 
 	i = 0;
-	// exit_num = get_exit_status();
+	exit_num = get_exit_status();
 	while (split[i])
 		i++;
 	if (i >= 2 && is_numeric(split[1]) != 1)

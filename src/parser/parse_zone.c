@@ -111,9 +111,8 @@ static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	m->row = 0;
 	m->start = 0;
 	tmp = ft_calloc((words_counter(str) + 1), sizeof(char *)); // Решил выделять память так с заполнением 0
-	// tmp = (char **)malloc(sizeof(char *) * (words_counter(str) + 10));
 	if (tmp == NULL)
-		exit(1);
+		return (NULL);
 	return (tmp);
 }
 
@@ -124,6 +123,8 @@ char	**minishell_split(char *str) // функция разбития строк�
 
 	tmp = NULL;
 	tmp = ft_initialization(str, tmp, &m);
+	if (!tmp)
+		return (NULL);
 	while (str[m.i] == ' ')
 		m.i++;
 	while (str[m.i])
@@ -151,6 +152,8 @@ char	**ft_parse(char *str)
 	if (quotes_check(str) || special_character_check(str) || brackets_check(str)) //Чекаем на неразрешенные символы и незакрытые кавычки и скобки
 		return (NULL); // Exit_status
 	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
+	if (!tmp)
+		return (NULL);
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
 	// tmp = remove_quotes(tmp);
 	return (tmp);

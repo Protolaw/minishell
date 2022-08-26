@@ -14,6 +14,8 @@
 
 # include "../libft/libft.h"
 # include "env.h"
+# include "exec.h"
+# include "expand.h"
 # include "builtin.h"
 # include "utils.h"
 
@@ -63,12 +65,14 @@ int		special_character_check(char *str);
 char	**ft_parse(char *str);
 char	**minishell_split(char *str);
 char	**remove_quotes(char **argv);
+int		quotes_check(char *str);
+
 char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
-int		quotes_check(char *str);
 void	free_mass(char **mass);
-void	ft_execute(char **argv, char **envp);
+
+int		ft_execute(char **argv, char **envp);
 char	*ft_minisubstr(char *s, int start, int len);
 
 int		brackets_check(char *str);
