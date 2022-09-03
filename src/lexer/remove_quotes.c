@@ -42,7 +42,7 @@ char	*no_quotes(char *s)
 	j = 0;
 	new = (char *)malloc(sizeof(char) * ((int)ft_strlen(s) - 1));
 	if (!new)
-		exit(1);
+		return (NULL);
 	while (s[i])
 	{
 		if (s[i] == '\"' || s[i] == '\'')
@@ -54,6 +54,38 @@ char	*no_quotes(char *s)
 	free (s);
 	return (check_new(new));
 }
+
+// char	**remove_quotes(char **argv)
+// {
+	// int	i;
+	// char **new_argv;
+	// int j;
+
+	// i = 0;
+	// j = 0;
+	// new_argv = ft_calloc((split_count(argv) + 1), sizeof(char *));
+	// if (new_argv == NULL)
+	// 	return (NULL);
+	// while (argv[i])
+	// {
+	// 	if (check_quotes(argv[i]))
+	// 	{
+	// 		argv[i] = no_quotes(argv[i]);
+	// 		if (argv[i] != NULL)
+	// 			new_argv[j] = ft_strdup(argv[i]);
+	// 		else
+	// 			j--;
+	// 	}
+	// 	else
+	// 		new_argv[j] = ft_strdup(argv[i]);
+	// 	free(argv[i]);
+	// 	j++;
+	// 	i++;
+	// }
+	// new_argv[j] = NULL;
+	// free(argv);
+// 	return (new_argv);
+// }
 
 char	**remove_quotes(char **argv)
 {

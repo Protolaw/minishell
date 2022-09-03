@@ -23,5 +23,7 @@ char	*no_quotes(char *s);
 int     check_quotes(char *s);
 
 char	*str_append(char *s1, char *s2);
+char	*chr_append(char *str, char chr);
+int     split_replace_str(char ***split, char *old_str, char *new_str);
 
 #endif

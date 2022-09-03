@@ -338,22 +338,24 @@ static int	no_pipe_case(char **argv, t_pipex *p, char **envp)
 	dupper(p->std_in, p->std_out);
 	if (!cmd)
 		return (FAILURE);
-	// if (handle_expand(cmd) == FAILURE)
-	// 	return (-1);
+	if (handle_expand(cmd) == FAILURE)
+		return (-1);
 	status = ft_isbuiltin(cmd);
-	if (status == SUCCESS)
+	if (status != FAILURE)
 	{
 		set_exit_status(status);
+		dupper(p->in, p->out);
 		return (status);
 	}
 	status = ft_child(&pid, cmd, path, envp);
+	set_exit_status(status);
 	// wait_child(pid);
 	waitpid(pid, &status, 0);
-	set_exit_status(WEXITSTATUS(status));
+	// set_exit_status(WEXITSTATUS(status));
 	dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
 	ft_free_split(cmd);
 	free(path);
-	return (WEXITSTATUS(status));
+	return (status);
 }
 
 static int	ft_piper(char **argv, t_pipex *p, char **envp)
@@ -361,13 +363,16 @@ static int	ft_piper(char **argv, t_pipex *p, char **envp)
 	p->pipe_num = pipe_counter(argv);
 	if (p->pipe_num == 0)
 	{
-		no_pipe_case(argv, p, envp);
-		return (0);
+		if (no_pipe_case(argv, p, envp) != SUCCESS)
+			return (1);
 	}
 	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1));
 	if (!(p->pipes))
-		exit(1);
-	return (1);
+	{
+		ft_err_print(NULL, NULL, strerror(ENOMEM));
+		return (1);
+	}
+	return (0);
 }
 
 int	ft_execute(char **argv, char **envp)

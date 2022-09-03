@@ -14,7 +14,7 @@ char *ft_minisubstr(char *s, int start, int len)
 	else if (len < (int)ft_strlen(s))
 		tab = malloc(sizeof(char) * (len + 1));
 	if (tab == NULL)
-		return (0);
+		return (NULL);
 	i = 0;
 	j = 0;
 	while (s[i] != '\0') 
@@ -27,7 +27,7 @@ char *ft_minisubstr(char *s, int start, int len)
 	return (tab);
 }
 
-void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
+int	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	char	*buf;
 
@@ -35,14 +35,21 @@ void	case_double_quotes(t_minisplit *m, char *str, char **tmp)
 	while (str[m->i] && str[m->i] != '\"')
 		m->i++;
 	buf = ft_minisubstr(str, m->start, (m->i + 1));
+	if (!buf)
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	m->i++;
 	buf = ft_empty(buf);
+	if (!buf)
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	tmp[m->row] = ft_empty(tmp[m->row]);
+	if (!tmp[m->row])
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
 	m->start = m->i;
+	return (0);
 }
 
-void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
+int	case_single_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	char	*buf;
 
@@ -52,12 +59,17 @@ void	case_single_quotes(t_minisplit *m, char *str, char **tmp)
 	buf = ft_minisubstr(str, m->start, (m->i + 1));
 	m->i++;
 	buf = ft_empty(buf);
+	if (!buf)
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	tmp[m->row] = ft_empty(tmp[m->row]);
 	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
+	if (!tmp[m->row])
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	m->start = m->i;
+	return (0);
 }
 
-void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
+int	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 {
 	int		end_sym;
 	char	*buf;
@@ -69,16 +81,21 @@ void	case_no_quotes(t_minisplit *m, char *str, char **tmp)
 	buf = ft_minisubstr(str, (m->start), ((m->i) + end_sym)); // откусываем от основной строки нужный нам кусок
 	m->i += end_sym;
 	buf = ft_empty(buf);
+	if (!buf)
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	tmp[m->row] = ft_empty(tmp[m->row]);
 	tmp[m->row] = ft_minijoin(tmp[m->row], buf); // после чего присоединяем его в нужную строчку в двумерном массиве
+	if (!tmp[m->row])
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	if (str[m->i] != '\0' && str[m->i] == ' ')
 		m->row++;
 	while (str[m->i] && str[m->i] == ' ')
 		m->i++;
 	m->start = m->i;
+	return (0);
 }
 
-void case_redirection(t_minisplit *m, char *str, char **tmp) 
+int case_redirection(t_minisplit *m, char *str, char **tmp) 
 {
 	char *buf;
 	char red;
@@ -88,8 +105,12 @@ void case_redirection(t_minisplit *m, char *str, char **tmp)
 	{
 		buf = ft_minisubstr(str, m->start, (m->i));
 		buf = ft_empty(buf);
+		if (!buf)
+			return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 		tmp[m->row] = ft_empty(tmp[m->row]);
 		tmp[m->row] = ft_minijoin(tmp[m->row], buf);
+		if (!tmp[m->row])
+			return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 		m->row++;
 		m->start = m->i;
 	}
@@ -97,12 +118,17 @@ void case_redirection(t_minisplit *m, char *str, char **tmp)
 		;
 	buf = ft_minisubstr(str, m->start, (m->i));
 	buf = ft_empty(buf);
+	if (!buf)
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	tmp[m->row] = ft_empty(tmp[m->row]);
 	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
+	if (!tmp[m->row])
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
 	m->row++;
 	while (str[m->i] && str[m->i] == ' ')
 		m->i++;
 	m->start = m->i;
+	return (0);
 }
 
 static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
@@ -155,6 +181,6 @@ char	**ft_parse(char *str)
 	if (!tmp)
 		return (NULL);
 	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
-	// tmp = remove_quotes(tmp);
+	tmp = remove_quotes(tmp);
 	return (tmp);
 }

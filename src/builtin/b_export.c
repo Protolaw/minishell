@@ -23,7 +23,7 @@ void	print_vars(void)
 	while (env_copy[++i])
 	{
 		l_var_name = ft_strchr(env_copy[i], '=') - env_copy[i];
-		printf("declare -x ");
+		// printf("declare -x ");
 		printf("%.*s", l_var_name + 1, env_copy[i]);
 		printf("\"%s\"\n", get_value_env(env_copy[i]));
 	}
