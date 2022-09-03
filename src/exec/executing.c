@@ -384,9 +384,10 @@ int	ft_execute(char **argv, char **envp)
 	p.std_in = 0;
 	p.std_out = 1;
 	p.pipefd[1] = 1;
+	p.close = 1;
 	if (here_doc_check(argv))
 		return (0); // предусмотреть случай для heredoc
-	if (ft_piper(argv, &p, envp))
+	if (!ft_piper(argv, &p, envp))
 		set_exit_status(pipe_execute(argv, &p, envp));
 	return (get_exit_status());
 }
