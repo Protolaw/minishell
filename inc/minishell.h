@@ -72,7 +72,7 @@ int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
 void	free_mass(char **mass);
 
-int		ft_execute(char **argv, char **envp);
+int		ft_execute(char **argv);
 char	*ft_minisubstr(char *s, int start, int len);
 
 int		brackets_check(char *str);

@@ -43,7 +43,7 @@ int	ft_exit(void *str, int exit_status)
 	return (exit_status);
 }
 
-int ft_task(char **envp)
+int ft_task(void)
 {
     char    *str;
     char    *cleaned;
@@ -69,7 +69,7 @@ int ft_task(char **envp)
         parsed = ft_parse(cleaned);
         if (parsed)
         {
-            ft_execute(parsed, envp);
+            ft_execute(parsed);
             ft_free_split(parsed);
         }
         free(str);
@@ -77,7 +77,7 @@ int ft_task(char **envp)
     }
 }
 
-int main(int argc, char **argv, char **envp)
+int main(int argc, char **argv)
 {
     if (argc != 1 && argv)
     {
@@ -87,7 +87,7 @@ int main(int argc, char **argv, char **envp)
     if (ft_init_env()) //  инициализируем двумерный массив для переменных окружения
 		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
     ft_sigaction(); // https://www.opennet.ru/man.shtml?topic=sigaction&category=2&russian=0
-    if (ft_task(envp) == FAILURE)
+    if (ft_task() == FAILURE)
 		return (FAILURE);
 	return (SUCCESS);
 }

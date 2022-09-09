@@ -2,16 +2,28 @@
 
 int	ft_newline_error(void)
 {
-	printf("syntax error near unexpected token 'newline'\n");
+	ft_err_print(NULL, NULL, "syntax error near unexpected token 'newline'\n");
 	return (FAILURE);
 }
 
 int	ft_syntax_error(int d, char c)
 {
 	if (d == 1)
-		printf("syntax error near unexpected token `%c'\n", c);
+	{
+		ft_putstr_fd(SHELL_NAME, 2);
+		ft_putstr_fd(": syntax error near unexpected token `", 2);
+		ft_putchar_fd(c, 2);
+		ft_putstr_fd("'\n", 2);
+	}
 	else if (d == 2)
-		printf("syntax error near unexpected token `%c%c'\n", c, c);
+	{
+		ft_putstr_fd(SHELL_NAME, 2);
+		ft_putstr_fd(": syntax error near unexpected token `", 2);
+		ft_putchar_fd(c, 2);
+		ft_putchar_fd(c, 2);
+		ft_putstr_fd("'\n", 2);
+	}
+	set_exit_status(2);
 	return (FAILURE);
 }
 

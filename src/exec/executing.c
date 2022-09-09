@@ -53,8 +53,8 @@ static char	*path_combine(char **path, char *cmd)
 	char	*full_dir;
 	int		i;
 
-	i = 0;
-	while (path[i])
+	i = -1;
+	while (path[++i])
 	{
 		dir = ft_strjoin(path[i], "/");
 		if (!dir)
@@ -70,33 +70,21 @@ static char	*path_combine(char **path, char *cmd)
 			free(full_dir);
 		else
 			return (full_dir);
-		i++;
 	}
 	return (NULL);
 }
 
-static char	*get_path(char **envp, char *cmd)
+static char	*get_path(char *cmd)
 {
-	int		i;
 	char	**path;
 	char	*fullpath;
 
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			// path = ft_split(envp[i] + 5, ':');
-			path = ft_split(get_value_env("PATH"), ':'); // Можно вынести за цикл
-			if (!path)
-				return (NULL);
-			fullpath = path_combine(path, cmd);
-			ft_free_split(path);
-			return (fullpath);
-		}
-		i++;
-	}
-	return (NULL);
+	path = ft_split(get_value_env("PATH"), ':'); // Можно вынести за цикл
+	if (!path)
+		return (NULL);
+	fullpath = path_combine(path, cmd);
+	ft_free_split(path);
+	return (fullpath);
 }
 
 static int	check_red(char *str)
@@ -168,14 +156,28 @@ static int	redirection_case(char **argv, int *i, t_pipex *p)
 	return (0);
 }
 
+char *joining_cmd(char *str, char *app)
+{
+	char	*space;
+	char	*tmp1;
+	char	*tmp2;
+
+	tmp1 = ft_empty(str);
+	tmp2 = ft_strjoin(tmp1, app);
+	space = ft_strdup(" ");
+	str = ft_strjoin(tmp2, space);
+	free(space);
+	free(tmp1);
+	free(tmp2);
+	return(str);
+}
+
+
 static char	**get_cmd(char **argv, t_pipex *p)
 {
 	int 	i;
 	char	**cmd;
 	char	*str;
-	char	*space;
-	char	*tmp1;
-	char	*tmp2;
 
 	i = 0;
 	str = NULL;
@@ -189,43 +191,61 @@ static char	**get_cmd(char **argv, t_pipex *p)
 				break ;
 		}
 		else
-		{
-			tmp1 = ft_empty(str);
-			tmp2 = ft_strjoin(tmp1, argv[i]);
-			space = ft_strdup(" ");
-			str = ft_strjoin(tmp2, space);
-		}
+			str = joining_cmd(str, argv[i]);
 		i++;
-		free(space);
-		free(tmp1);
-		free(tmp2);
 	}
 	cmd = ft_split(str, ' ');
 	free(str);
 	return (cmd);
 }
 
-static int	child_process(char **argv, t_pipex *p, char **envp)
+int do_cmd(char **cmd, int status)
 {
-	char	*path;
-	char	**cmd;
+	char *path;
 
-	cmd = get_cmd(argv, p);
-	dupper(p->std_in, p->std_out);
-	if (!cmd || !ft_isbuiltin(cmd))
-		return (FAILURE);
-	path = get_path(envp, cmd[0]);
+	path = get_path(cmd[0]);
 	if (!path)
 	{
 		ft_err_print(cmd[0], NULL, "command not found");
-		ft_free_split(cmd);
 		return (EXEC_NOTFOUND);
 	}
 	else
-		execve(path, cmd, envp);
-	ft_free_split(cmd);
+		execve(path, cmd, g_env);
+	if (errno == ENOENT)
+		status = EXEC_NOTFOUND;
+	else
+		status = EXEC_NOEXEC;
+	print_err_errno(cmd[0], NULL);
 	free(path);
-	return (SUCCESS);
+	return (status);
+}
+
+static int	child_process(char **argv, t_pipex *p)
+{
+	char	**cmd;
+	int status;
+
+	cmd = get_cmd(argv, p);
+	dupper(p->std_in, p->std_out);
+	status = 0;
+	if (!cmd || handle_expand(cmd) == FAILURE)
+		return (-1);
+	status = ft_isbuiltin(cmd);
+	if (status == SUCCESS)
+	{
+		set_exit_status(status);
+		dupper(p->in, p->out);
+		return (0);
+	}
+	else if (status == FAILURE)
+	{
+		status = do_cmd(cmd, status);
+		set_exit_status(status);
+		dupper(p->in, p->out);
+		ft_free_split(cmd);
+		return (0);
+	}
+	return (-1);
 }
 
 static int	wait_exit(t_pipex	*p)
@@ -255,7 +275,7 @@ static int	go_next_cmd(int j, char **argv)
 	return (-1);
 }
 
-static int	pipe_execute(char **argv, t_pipex *p, char **envp)
+static int	pipe_execute(char **argv, t_pipex *p)
 {
 	int	i;
 	int	j;
@@ -277,7 +297,7 @@ static int	pipe_execute(char **argv, t_pipex *p, char **envp)
 		if (p->pipes[i] == -1)
 			exit(1);
 		if (p->pipes[i] == 0)
-			child_process(&argv[j], p, envp);
+			child_process(&argv[j], p);
 		close_pipe(p);
 		j = go_next_cmd(j, argv);
 		i++;
@@ -286,16 +306,7 @@ static int	pipe_execute(char **argv, t_pipex *p, char **envp)
 	return(wait_exit(p));
 }
 
-// static void wait_child(pid_t pid)
-// {
-// 	int	status;
-
-// 	status = 0;
-// 	waitpid(pid, &status, 0);
-// 	// return (status);
-// }
-
-static int ft_child(pid_t *pid, char **cmd, char *path, char **envp)
+static int ft_child_monopipe(pid_t *pid, char **cmd)
 {
 	int status;
 
@@ -308,86 +319,75 @@ static int ft_child(pid_t *pid, char **cmd, char *path, char **envp)
 	}
 	if (*pid == 0)
 	{
-		path = get_path(envp, cmd[0]);
-		if (!path)
-		{
-			ft_err_print(cmd[0], NULL, "command not found");
-			return (EXEC_NOTFOUND);
-		}
-		else
-			execve(path, cmd, envp);
-		if (errno == ENOENT)
-			status = EXEC_NOTFOUND;
-		else
-			status = EXEC_NOEXEC;
-		print_err_errno(cmd[0], NULL);
+		status = do_cmd(cmd, status);
+		set_exit_status(status);
 	}
 	return (status);
 }
 
-static int	no_pipe_case(char **argv, t_pipex *p, char **envp)
+static int	no_pipe_case(char **argv, t_pipex *p)
 {
-	char	*path;
 	char	**cmd;
 	pid_t	pid;
 	int		status;
 
 	p->std_out = 1;
-	path = NULL;
 	cmd = get_cmd(argv, p);
 	dupper(p->std_in, p->std_out);
-	if (!cmd)
-		return (FAILURE);
-	if (handle_expand(cmd) == FAILURE)
+	if (!cmd || handle_expand(cmd) == FAILURE)
 		return (-1);
 	status = ft_isbuiltin(cmd);
-	if (status != FAILURE)
+	if (status == SUCCESS)
 	{
 		set_exit_status(status);
 		dupper(p->in, p->out);
-		return (status);
+		return (0);
 	}
-	status = ft_child(&pid, cmd, path, envp);
-	set_exit_status(status);
-	// wait_child(pid);
-	waitpid(pid, &status, 0);
-	// set_exit_status(WEXITSTATUS(status));
-	dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
+	else if (status == FAILURE)
+	{
+		status = ft_child_monopipe(&pid, cmd);
+		if (!status)
+		{
+			waitpid(pid, &status, 0);
+			set_exit_status(WEXITSTATUS(status));
+		}
+		dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
+	}
 	ft_free_split(cmd);
-	free(path);
-	return (status);
+	return (0);
 }
 
-static int	ft_piper(char **argv, t_pipex *p, char **envp)
+static int	ft_piper(char **argv, t_pipex *p)
 {
 	p->pipe_num = pipe_counter(argv);
 	if (p->pipe_num == 0)
 	{
-		if (no_pipe_case(argv, p, envp) != SUCCESS)
-			return (1);
+		if (no_pipe_case(argv, p) != -1)
+			return (0);
 	}
 	p->pipes = (int *)malloc(sizeof(int) * (p->pipe_num + 1));
 	if (!(p->pipes))
-	{
-		ft_err_print(NULL, NULL, strerror(ENOMEM));
-		return (1);
-	}
-	return (0);
+		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
+	return (1);
 }
 
-int	ft_execute(char **argv, char **envp)
+int	ft_execute(char **argv)
 {
 	t_pipex	p;
+	int proc;
 
 	p.in = dup(0);
 	p.out = dup(1);
 	p.std_in = 0;
 	p.std_out = 1;
 	p.pipefd[1] = 1;
-	p.close = 1;
+	p.close = 0;
 	if (here_doc_check(argv))
 		return (0); // предусмотреть случай для heredoc
-	if (!ft_piper(argv, &p, envp))
-		set_exit_status(pipe_execute(argv, &p, envp));
+	proc = ft_piper(argv, &p);
+	if (!proc)
+		return (get_exit_status());
+	if (proc == 1)
+		pipe_execute(argv, &p);
 	return (get_exit_status());
 }
