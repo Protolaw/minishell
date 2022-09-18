@@ -1,19 +1,5 @@
 #include "minishell.h"
 
-static int	here_doc_check(char **argv)
-{
-	int	i;
-
-	i = 0;
-	while (argv[i])
-	{
-		if (ft_strncmp(argv[i], "<<\0", 3) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 static int	pipe_counter(char **argv)
 {
 	int	i;
@@ -347,8 +333,7 @@ void	ft_execute(char **argv, char **envp)
 	p.std_in = 0;
 	p.std_out = 1;
 	p.pipefd[1] = 1;
-	if (here_doc_check(argv))
-		return ; // предусмотреть случай для heredoc
+	here_doc_check(argv, &p, envp);
 	if (ft_piper(argv, &p, envp))
 		pipe_execute(argv, &p, envp);
 }

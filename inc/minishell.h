@@ -44,6 +44,7 @@ typedef struct s_pipex
 	int		*pipes;
 	int		pipefd[2];
 	int		pipe_num;
+	t_list	*fds_here_doc;
 }	t_pipex;
 
 int		ft_newline_error(void);
