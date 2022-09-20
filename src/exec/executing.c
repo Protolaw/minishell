@@ -1,19 +1,5 @@
 #include "minishell.h"
 
-static int	here_doc_check(char **argv)
-{
-	int	i;
-
-	i = 0;
-	while (argv[i])
-	{
-		if (ft_strncmp(argv[i], "<<\0", 3) == 0)
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
 static int	pipe_counter(char **argv)
 {
 	int	i;
@@ -79,7 +65,7 @@ static char	*get_path(char *cmd)
 	char	**path;
 	char	*fullpath;
 
-	path = ft_split(get_value_env("PATH"), ':'); // Можно вынести за цикл
+	path = ft_split(get_value_env("PATH"), ':');
 	if (!path)
 		return (NULL);
 	fullpath = path_combine(path, cmd);
@@ -226,38 +212,52 @@ static int	child_process(char **argv, t_pipex *p)
 	int status;
 
 	cmd = get_cmd(argv, p);
-	dupper(p->std_in, p->std_out);
 	status = 0;
 	if (!cmd || handle_expand(cmd) == FAILURE)
 		return (-1);
+	dupper(p->std_in, p->std_out);
 	status = ft_isbuiltin(cmd);
 	if (status == SUCCESS)
 	{
 		set_exit_status(status);
-		dupper(p->in, p->out);
-		return (0);
+		return (status);
 	}
 	else if (status == FAILURE)
 	{
 		status = do_cmd(cmd, status);
-		set_exit_status(status);
-		dupper(p->in, p->out);
-		ft_free_split(cmd);
-		return (0);
+		if (!status)
+		{
+			set_exit_status(status);
+			return (status);
+		}
+		else
+		{
+			set_exit_status(status);
+			ft_free_split(cmd);
+			exit(get_exit_status());
+		}
 	}
 	return (-1);
 }
 
-static int	wait_exit(t_pipex	*p)
+int	wait_exit(t_pipex	*p)
 {
 	int	i;
 	int	status;
+	int test;
 
 	i = 0;
 	status = 0;
 	while (i <= p->pipe_num)
 	{
-		waitpid(p->pipes[i], &status, 0);
+		test = waitpid(p->pipes[i], &status, 0);
+		set_exit_status(WEXITSTATUS(status));
+		// printf("%d --- exit_stat\n", get_exit_status());
+		// printf("%d --- waitpid\n", test);
+		if (test == -1)
+		{
+			exit(get_exit_status());
+		}
 		i++;
 	}
 	free(p->pipes);
@@ -306,7 +306,7 @@ static int	pipe_execute(char **argv, t_pipex *p)
 	return(wait_exit(p));
 }
 
-static int ft_child_monopipe(pid_t *pid, char **cmd)
+static int ft_child_no_pipe(pid_t *pid, char **cmd)
 {
 	int status;
 
@@ -345,13 +345,18 @@ static int	no_pipe_case(char **argv, t_pipex *p)
 	}
 	else if (status == FAILURE)
 	{
-		status = ft_child_monopipe(&pid, cmd);
+		status = ft_child_no_pipe(&pid, cmd);
 		if (!status)
 		{
 			waitpid(pid, &status, 0);
 			set_exit_status(WEXITSTATUS(status));
+			dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
 		}
-		dupper(p->in, p->out); // возвращаем std_in и std_out на свои места, иначе при перенаправлении ввод останется в файле
+		else
+		{
+			ft_free_split(cmd);
+			exit(get_exit_status());
+		}
 	}
 	ft_free_split(cmd);
 	return (0);
@@ -382,12 +387,13 @@ int	ft_execute(char **argv)
 	p.std_out = 1;
 	p.pipefd[1] = 1;
 	p.close = 0;
-	if (here_doc_check(argv))
-		return (0); // предусмотреть случай для heredoc
+	// if (here_doc_check(argv, &p, g_env))
+	// 	return (0); // предусмотреть случай для heredoc
+	// here_doc_check(argv, &p, g_env);
 	proc = ft_piper(argv, &p);
 	if (!proc)
 		return (get_exit_status());
 	if (proc == 1)
-		pipe_execute(argv, &p);
+		return (pipe_execute(argv, &p));
 	return (get_exit_status());
 }

@@ -5,4 +5,6 @@
 
 int		handle_expand(char **cmd);
 
+// void    here_doc_check_argv(char **argv, t_pipex	*p, char **envp);
+
 #endif
