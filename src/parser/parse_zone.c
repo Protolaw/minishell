@@ -15,123 +15,16 @@ char *ft_minisubstr(char *s, int start, int len)
 		tab = malloc(sizeof(char) * (len + 1));
 	if (tab == NULL)
 		return (NULL);
-	i = 0;
+	i = -1;
 	j = 0;
-	while (s[i] != '\0') 
-	{
+	while (s[++i] != '\0')
 		if (i >= start && i < len)
 			tab[j++] = s[i];
-		i++;
-  	}
 	tab[j] = '\0';
 	return (tab);
 }
 
-int	case_double_quotes(t_minisplit *m, char *str, char **tmp)
-{
-	char	*buf;
-
-	m->i++;
-	while (str[m->i] && str[m->i] != '\"')
-		m->i++;
-	buf = ft_minisubstr(str, m->start, (m->i + 1));
-	if (!buf)
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	m->i++;
-	buf = ft_empty(buf);
-	if (!buf)
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	tmp[m->row] = ft_empty(tmp[m->row]);
-	if (!tmp[m->row])
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
-	m->start = m->i;
-	return (0);
-}
-
-int	case_single_quotes(t_minisplit *m, char *str, char **tmp)
-{
-	char	*buf;
-
-	m->i++;
-	while (str[m->i] && str[m->i] != '\'')
-		m->i++;
-	buf = ft_minisubstr(str, m->start, (m->i + 1));
-	m->i++;
-	buf = ft_empty(buf);
-	if (!buf)
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	tmp[m->row] = ft_empty(tmp[m->row]);
-	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
-	if (!tmp[m->row])
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	m->start = m->i;
-	return (0);
-}
-
-int	case_no_quotes(t_minisplit *m, char *str, char **tmp)
-{
-	int		end_sym;
-	char	*buf;
-  
-	end_sym = 0;
-	buf = NULL;
-	if (str[(m->i) + 1] == '\0' && str[m->i] != ' ')
-		end_sym = 1;
-	buf = ft_minisubstr(str, (m->start), ((m->i) + end_sym)); // откусываем от основной строки нужный нам кусок
-	m->i += end_sym;
-	buf = ft_empty(buf);
-	if (!buf)
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	tmp[m->row] = ft_empty(tmp[m->row]);
-	tmp[m->row] = ft_minijoin(tmp[m->row], buf); // после чего присоединяем его в нужную строчку в двумерном массиве
-	if (!tmp[m->row])
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	if (str[m->i] != '\0' && str[m->i] == ' ')
-		m->row++;
-	while (str[m->i] && str[m->i] == ' ')
-		m->i++;
-	m->start = m->i;
-	return (0);
-}
-
-int case_redirection(t_minisplit *m, char *str, char **tmp) 
-{
-	char *buf;
-	char red;
-
-	red = str[m->i];
-	if (str[m->i - 1] != ' ') 
-	{
-		buf = ft_minisubstr(str, m->start, (m->i));
-		buf = ft_empty(buf);
-		if (!buf)
-			return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-		tmp[m->row] = ft_empty(tmp[m->row]);
-		tmp[m->row] = ft_minijoin(tmp[m->row], buf);
-		if (!tmp[m->row])
-			return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-		m->row++;
-		m->start = m->i;
-	}
-	while (str[++m->i] && str[m->i] == red)
-		;
-	buf = ft_minisubstr(str, m->start, (m->i));
-	buf = ft_empty(buf);
-	if (!buf)
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	tmp[m->row] = ft_empty(tmp[m->row]);
-	tmp[m->row] = ft_minijoin(tmp[m->row], buf);
-	if (!tmp[m->row])
-		return (ft_err_print(NULL, NULL, strerror(ENOMEM)));
-	m->row++;
-	while (str[m->i] && str[m->i] == ' ')
-		m->i++;
-	m->start = m->i;
-	return (0);
-}
-
-static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
+char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 {
 	m->i = 0;
 	m->row = 0;
@@ -142,15 +35,8 @@ static char	**ft_initialization(char *str, char **tmp, t_minisplit *m)
 	return (tmp);
 }
 
-char	**minishell_split(char *str) // функция разбития строки в двумерный массив строк
+char	**minishell_split(char *str, char **tmp,t_minisplit m) // функция разбития строки в двумерный массив строк
 {
-	char		**tmp;
-	t_minisplit	m;
-
-	tmp = NULL;
-	tmp = ft_initialization(str, tmp, &m);
-	if (!tmp)
-		return (NULL);
 	while (str[m.i] == ' ')
 		m.i++;
 	while (str[m.i])
@@ -173,14 +59,20 @@ char	**minishell_split(char *str) // функция разбития строк�
 char	**ft_parse(char *str)
 {
 	char	**tmp;
+	t_minisplit	m;
 
 	tmp = NULL;
-	if (quotes_check(str) || special_character_check(str) || brackets_check(str)) //Чекаем на неразрешенные символы и незакрытые кавычки и скобки
-		return (NULL); // Exit_status
-	tmp = minishell_split(str); // парсинг с учетом кавычек и перенаправлений
+	if (quotes_check(str) || special_character_check(str))
+	{
+		set_exit_status(2);
+		return (NULL);
+	}
+	tmp = ft_initialization(str, tmp, &m);
 	if (!tmp)
 		return (NULL);
-	//env = environment_variables(tmp, envp); тут пока хз, не получается без мака норм затестить
+	tmp = minishell_split(str, tmp, m); 
+	if (!tmp)
+		return (NULL);
 	tmp = remove_quotes(tmp);
 	return (tmp);
 }

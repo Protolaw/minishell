@@ -53,3 +53,13 @@ int	env_set_var(char *name, char *value)
 	free(var_str);
 	return (status);
 }
+
+int	shell_set(void)
+{
+	if (get_value_env("SHELL"))
+	{
+		if (env_set_var("SHELL", SHELL_NAME) == -1)
+			return (0);
+	}
+	return (1);
+}

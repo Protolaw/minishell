@@ -14,4 +14,6 @@ int     env_put_var(char *str);
 int     env_set_var(char *name, char *value);
 int     env_var_is_value(char *var_name, char *value);
 
+int     shell_set(void);
+
 #endif

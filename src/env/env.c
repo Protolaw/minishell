@@ -1,19 +1,8 @@
-
 #include "env.h"
 
 int env_is_var_char(char c)
 {
 	return (ft_isalnum(c) || c == '_');
-}
-
-int	shell_set(void)
-{
-	if (get_value_env("SHELL"))
-	{
-		if (env_set_var("SHELL", SHELL_NAME) == -1)
-			return (0);
-	}
-	return (1);
 }
 
 char	*env_find_var(char *key)

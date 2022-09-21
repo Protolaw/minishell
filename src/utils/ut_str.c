@@ -48,3 +48,13 @@ int	split_replace_str(char ***split, char *old_str, char *new_str)
 	(*split)[i] = new_str;
 	return (0);
 }
+
+char *check_new(char *new)
+{
+	if (new[0] == '\0')
+	{
+		free (new);
+		new = NULL;
+	}
+	return (new);
+}

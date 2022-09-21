@@ -87,23 +87,13 @@ int expand_elem(char *elem, char ***cmd)
     return (SUCCESS);
 }
 
-int expand_list(char **cmd)
-{
-    int i;
-
-    i = -1;
-    while (cmd[++i])
-    {
-        if (expand_elem(cmd[i], &cmd) != SUCCESS)
-			return (FAILURE);
-    }
-    return (SUCCESS);
-}
-
 int	handle_expand(char **cmd)
 {
-	int		status;
+	int i;
 
-	status = expand_list(cmd);
-    return (status);
+    i = -1;
+	while (cmd[++i])
+        if (expand_elem(cmd[i], &cmd) != SUCCESS)
+			return (FAILURE);
+    return (SUCCESS);
 }

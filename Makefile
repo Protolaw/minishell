@@ -6,7 +6,7 @@
 #    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/09 12:33:55 by bbrusco           #+#    #+#              #
-#    Updated: 2022/09/20 21:17:16 by almaz            ###   ########.fr        #
+#    Updated: 2022/09/21 16:06:33 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,11 +24,11 @@ ODIR		= obj
 
 HEADER		= minishell.h
 SRC			= main.c 
-SRC_PARSE	= parse_errors.c parse_utils.c parse_zone.c
-SRC_LEX		= remove_quotes.c special_character.c
-SRC_EXEC	= executing.c exec_exit.c
+SRC_PARSE	= parse_errors.c parse_utils.c parse_zone.c parse_cases.c
+SRC_LEX		= remove_quotes.c special_character.c check_pipe.c
+SRC_EXEC	= executing.c exec_exit.c redir.c path_cmd.c exec_utils.c no_pipe.c
 SRC_UTILS	= free.c err.c utils.c ut_str.c
-SRC_ENV		= env.c env_edit.c
+SRC_ENV		= env_edit.c env.c
 SRC_EXPAND	= expand.c #here_doc.c
 SRC_BLTIN	= builtin.c b_env.c b_cd.c b_pwd.c b_exit.c b_echo.c b_export.c b_unset.c
 

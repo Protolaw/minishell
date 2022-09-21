@@ -14,7 +14,7 @@
 
 # include "../libft/libft.h"
 # include "env.h"
-# include "exec.h"
+# include "lexer.h"
 # include "expand.h"
 # include "builtin.h"
 # include "utils.h"
@@ -58,24 +58,28 @@ typedef struct s_pipex
 	t_list	*fds_here_doc;
 }	t_pipex;
 
+# include "exec.h"
+
 int		ft_newline_error(void);
 int		ft_quotes_error(int d_q, int s_q);
 int		ft_syntax_error(int d, char c);
 
 int		special_character_check(char *str);
 char	**ft_parse(char *str);
-char	**minishell_split(char *str);
 char	**remove_quotes(char **argv);
 int		quotes_check(char *str);
-
+void	free_mass(char **mass);
 char	*ft_minijoin(char *s1, char *s2);
 int		words_counter(char *str);
 void	ft_scroller(char *str, char q, int *i, int *count);
-void	free_mass(char **mass);
 
 int		ft_execute(char **argv);
 char	*ft_minisubstr(char *s, int start, int len);
 
-int		brackets_check(char *str);
+// Parse cases
+int		case_double_quotes(t_minisplit *m, char *str, char **tmp);
+int		case_single_quotes(t_minisplit *m, char *str, char **tmp);
+int		case_no_quotes(t_minisplit *m, char *str, char **tmp);
+int		case_redirection(t_minisplit *m, char *str, char **tmp);
 
 #endif
