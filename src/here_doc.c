@@ -16,7 +16,10 @@ static int	here_doc_check(char **argv)
 
 void    write_in_pipe(char *str, int *p, char **envp)
 {
-
+    str = ft_minijoin(str, ft_strdup("\n"));
+    ft_putstr_fd(str p[1]);
+    free(str);
+    str = 0;
 }
 
 int here_doc(char *stop, char **envp)
@@ -36,7 +39,7 @@ int here_doc(char *stop, char **envp)
         }
         if (ft_strncmp(stop, str) == 0)
             break ;
-        //write_in_pipe(str, p, envp); // envp для $
+        write_in_pipe(str, p, envp); // envp для $
     }
     free(str);
     close(p[1]);
@@ -48,28 +51,28 @@ int ft_here(int *fd, char *stop, char **envp)
     int tmp_fd;
 
     tmp_fd = 0;
-    if (fd != -1)
-    {
-        *fd = here_doc(stop, envp);
-        return (0);
-    }
     if (fd == -1)
     {
         tmp_fd = here_doc(stop, envp);
         close(tmp_fd);
-        return (0);
+    }
+    else
+    {
+        if (*fd != 0)
+            close(*fd);
+        *fd = here_doc(stop, envp);
     }
     return (1);
 }
 
-void    check_here_red(int *fd, t_list fds, char **argv, char **envp)
+void    check_here_red(int *fd, t_list *fds, char **argv, char **envp)
 {
     int i;
 
     i = 0;
-    while(argv[i] && *fd == -1)
+    while(argv[i] && *fd != -1)
     {
-        if(ft_strncmp(argv[i], "<<\0", 3) == 0)
+        if (ft_strncmp(argv[i], "<<\0", 3) == 0)
         {
             if (ft_here(fd, argv[i + 1], envp) == 0)
                 return ;
@@ -84,11 +87,16 @@ void    check_here_red(int *fd, t_list fds, char **argv, char **envp)
         }
         else if (ft_strncmp(argv[i], "|\0", 2) == 0)
         {
-            //ft_lstadd_back(fds, ft_lstnew(Опознаватель пайпа))
+            ft_lstadd_back(fds, ft_lstnew(*fd))
             *fd = 0;
         }
         i++;
     }
+}
+
+void    delete_here(char **argv)
+{
+
 }
 
 t_list get_fds(char **argv, char **envp)
@@ -99,17 +107,24 @@ t_list get_fds(char **argv, char **envp)
     fds = 0;
     fd = 0;
     check_here_red(&fd, &fds, argv, envp);
-    if (fd == -1)
-        return (NULL);
+    ft_lstadd_back(&fds, ft_lstnew(fd));
+    delete_here(argv); // удалить << и < из argv
+    //вывод накопившихся ошибок
     return(fds);
 }
 
-void    here_doc_check(char **argv, t_pipex	*p, char **envp)
+int here_doc_check(char **argv, t_pipex	*p, char **envp)
 {
+    p->fds_here_doc = 0;
     if (here_doc_check(argv))
     {
-       p->fds_here_doc = 0; //Вводим список в котором будут сохраняться fd до heredoc включительно(сделал пока листом, в дальнейшем мб поменяем на двумерник)
-       p->fds_here_doc = get_fds(argv, envp)
+       p->fds_here_doc = get_fds(argv, envp);
+       if (argv == 0 || p->fds_here_doc == 0)
+       {
+           return (1);
+       }
+       p->std_in = *(int *)p->fds_here_doc->content;
+       p->fds_here_doc = p->fds_here_doc->next;
     }
-    return ;
+    return (0);
 }

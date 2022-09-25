@@ -333,7 +333,8 @@ void	ft_execute(char **argv, char **envp)
 	p.std_in = 0;
 	p.std_out = 1;
 	p.pipefd[1] = 1;
-	here_doc_check(argv, &p, envp);
+	if (here_doc_check(argv, &p, envp))
+		return ;
 	if (ft_piper(argv, &p, envp))
 		pipe_execute(argv, &p, envp);
 }
