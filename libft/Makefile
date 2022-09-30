@@ -6,7 +6,7 @@
 #    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/08/29 11:53:47 by bbrusco           #+#    #+#              #
-#    Updated: 2022/08/13 16:15:03 by almaz            ###   ########.fr        #
+#    Updated: 2022/09/28 17:42:43 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,8 +77,8 @@ ${NAME} : ${OBJS}
 	@ranlib $(NAME)
 
 bonus :	${OBJS} ${BONUS_OBJS}
-		${AR} ${ARFLAGS} ${NAME} ${OBJS} ${BONUS_OBJS}
-		ranlib $(NAME)
+	@${AR} ${ARFLAGS} ${NAME} ${OBJS} ${BONUS_OBJS}
+	@ranlib $(NAME)
 
 clean :
 	@${RM} ${OBJS} ${BONUS_OBJS}

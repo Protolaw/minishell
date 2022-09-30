@@ -4,7 +4,6 @@
 # include "minishell.h"
 
 int		handle_expand(char **cmd);
-
-// void    here_doc_check_argv(char **argv, t_pipex	*p, char **envp);
+int     expand_elem(char *elem, char ***cmd);
 
 #endif

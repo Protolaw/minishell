@@ -87,11 +87,9 @@ int	ft_execute(char **argv)
 	p.std_out = 1;
 	p.pipefd[1] = 1;
 	p.close = 0;
-	// if (here_doc_check(argv, &p, g_env))
-	// 	return (0); // предусмотреть случай для heredoc
-	// here_doc_check(argv, &p, g_env);
+	if (!here_doc_check(argv, &p))
+		return (0);
 	proc = ft_piper(argv, &p);
-	// if (!proc)
 	if (p.pipe_num == 0)
 		return (get_exit_status());
 	if (proc == 1)

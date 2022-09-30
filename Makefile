@@ -6,7 +6,7 @@
 #    By: almaz <almaz@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/09 12:33:55 by bbrusco           #+#    #+#              #
-#    Updated: 2022/09/21 16:06:33 by almaz            ###   ########.fr        #
+#    Updated: 2022/09/28 17:42:15 by almaz            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRC_LEX		= remove_quotes.c special_character.c check_pipe.c
 SRC_EXEC	= executing.c exec_exit.c redir.c path_cmd.c exec_utils.c no_pipe.c
 SRC_UTILS	= free.c err.c utils.c ut_str.c
 SRC_ENV		= env_edit.c env.c
-SRC_EXPAND	= expand.c #here_doc.c
+SRC_EXPAND	= expand.c here_doc.c
 SRC_BLTIN	= builtin.c b_env.c b_cd.c b_pwd.c b_exit.c b_echo.c b_export.c b_unset.c
 
 SRCS_PARSE	= $(addprefix parser/, $(SRC_PARSE))
@@ -51,7 +51,7 @@ INCLUDES	:= -I./inc/ $(addprefix -I./, $(LIBDIRS)) \
 all: $(NAME)
 
 $(NAME): 	$(OBJS)
-	@make -C $(LIBDIR) all
+	@make -C $(LIBDIR) bonus
 	@$(CC) $(C_FLAGS) $(OBJS) $(LDLIBS) $(LIBFT_NAME) -o $(NAME)
 	@echo "\n-- $(NAME) created \n"
 

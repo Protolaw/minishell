@@ -46,7 +46,7 @@ int	split_replace_str(char ***split, char *old_str, char *new_str)
 		return (FAILURE);
 	free(old_str);
 	(*split)[i] = new_str;
-	return (0);
+	return (SUCCESS);
 }
 
 char *check_new(char *new)

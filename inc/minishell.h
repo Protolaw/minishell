@@ -15,7 +15,6 @@
 # include "../libft/libft.h"
 # include "env.h"
 # include "lexer.h"
-# include "expand.h"
 # include "builtin.h"
 # include "utils.h"
 
@@ -59,6 +58,7 @@ typedef struct s_pipex
 }	t_pipex;
 
 # include "exec.h"
+# include "expand.h"
 
 int		ft_newline_error(void);
 int		ft_quotes_error(int d_q, int s_q);
@@ -81,5 +81,7 @@ int		case_double_quotes(t_minisplit *m, char *str, char **tmp);
 int		case_single_quotes(t_minisplit *m, char *str, char **tmp);
 int		case_no_quotes(t_minisplit *m, char *str, char **tmp);
 int		case_redirection(t_minisplit *m, char *str, char **tmp);
+
+int		here_doc_check(char **argv, t_pipex	*p);
 
 #endif
