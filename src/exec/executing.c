@@ -87,7 +87,7 @@ int	ft_execute(char **argv)
 	p.std_out = 1;
 	p.pipefd[1] = 1;
 	p.close = 0;
-	if (!here_doc_check(argv, &p))
+	if (here_doc_check(argv, &p))
 		return (0);
 	proc = ft_piper(argv, &p);
 	if (p.pipe_num == 0)

@@ -61,5 +61,5 @@ int	here_doc_check(char **argv, t_pipex	*p)
     free(str);
 	close(end[1]);
 	wait_for_heredoc(p);
-	return (0);
+	return (1);
 }
