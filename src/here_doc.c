@@ -14,15 +14,17 @@ static int	here_doc_check(char **argv)
 	return (0);
 }
 
-void    write_in_pipe(char *str, int *p, char **envp)
+static void    write_in_pipe(char *str, int *p, char **envp)
 {
+    if (envp == NULL)
+        return; //Надо будет добавить обработку и $
     str = ft_minijoin(str, ft_strdup("\n"));
     ft_putstr_fd(str p[1]);
     free(str);
     str = 0;
 }
 
-int here_doc(char *stop, char **envp)
+static int here_doc(char *stop, char **envp)
 {
     char *str;
     int p[2];
@@ -46,7 +48,7 @@ int here_doc(char *stop, char **envp)
     return (p[0]);
 }
 
-int ft_here(int *fd, char *stop, char **envp)
+static int ft_here(int *fd, char *stop, char **envp)
 {
     int tmp_fd;
 
@@ -65,7 +67,7 @@ int ft_here(int *fd, char *stop, char **envp)
     return (1);
 }
 
-void    check_here_red(int *fd, t_list *fds, char **argv, char **envp)
+static void    check_here_red(int *fd, t_list **fds, char **argv, char **envp)
 {
     int i;
 
@@ -94,21 +96,92 @@ void    check_here_red(int *fd, t_list *fds, char **argv, char **envp)
     }
 }
 
-void    delete_here(char **argv)
+static int check_redirect_here(char **argv)
 {
+    int i;
 
+    i = 0;
+    while (argv[i])
+    {
+        if (ft_strncmp(argv[i], "<<\0", 3) == 0
+            || ft_strncmp(argv[i], "<\0", 2) == 0)
+            return (1);
+        i++;
+    }
+    return (0);
 }
 
-t_list get_fds(char **argv, char **envp)
+void	del(void *ptr)
+{
+	free(ptr);
+}
+
+static void delete_extra(char *first, char **second)
+{
+	t_list	*prev;
+	t_list	*node;
+
+	node = 0;
+	first = *second;
+	while (first != NULL && (ft_strncmp(first->content, "<<\0", 4) != 0
+			&& ft_strncmp(first->content, "<\0", 3) != 0))
+	{
+		prev = first;
+		first = first->next;
+	}
+	if (list->next != NULL)
+	{
+		node = first;
+		prev->next = first->next->next;
+		node->next->next = 0;
+		ft_lstclear(&node, del);
+	}
+	else
+		prev = NULL;
+}
+
+static void delete_here(t_list **argv)
+{
+    t_list *tmp;
+
+    tmp = *argv;
+    if (tmp != NULL && ft_strncmp(tmp->content, "<<\0", 3) == 0
+        || ft_strncmp(tmp->content, "<\0", 2) == 0)
+    {
+        *argv = tmp->next->next;
+    }
+    else
+        delete_extra(tmp, argv);
+    if (*argv != NULL && check_redirect_here(*argv))
+        delete_here(argv);
+}
+
+static void write_in_list(t_list **to_delete, char **argv)
+{
+    int i;
+    
+    i = 0;
+    while(argv[i])
+    {
+        ft_lstadd_back(to_delete, ft_lstnew(argv[i]))
+        i++;
+    }
+    free_mass(argv);
+}
+
+static t_list get_fds(char **argv, char **envp)
 {
     t_list *fds;
+    t_list **to_delete;
     int fd;
     
     fds = 0;
     fd = 0;
+    to_delete = 0;
     check_here_red(&fd, &fds, argv, envp);
     ft_lstadd_back(&fds, ft_lstnew(fd));
-    delete_here(argv); // удалить << и < из argv
+    write_in_list(to_delete, argv);
+    delete_here(to_delete); // удалить << и < из argv
     //вывод накопившихся ошибок
     return(fds);
 }
